@@ -1,0 +1,18 @@
+version: "3.7"
+services:
+  # web:
+  #   build: .
+  #   ports:
+  #     - "8000:8000"
+  database:
+    image: postgres:15-alpine3.18
+    ports:
+      - "5432:5432"
+    volumes:
+      - hireIt-backed-database:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: hire_admin
+      POSTGRES_PASSWORD: pAssw0rd
+      POSTGRES_DB: hireIt
+volumes:
+  hireIt-backed-database:
