@@ -23,12 +23,10 @@ from rest_framework import permissions
 
 schema_view = swagger_get_schema_view(
    openapi.Info(
-      title="Capstone Project API",
+      title="HireIt Project API",
       default_version='v1',
       description="API of project",
-      terms_of_service="https://www.google.com/policies/terms/",
       contact=openapi.Contact(email="duyquang.tdq7@gmail.com"),
-      license=openapi.License(name="PVB License"),
    ),
    public=True,
    permission_classes=[permissions.AllowAny],

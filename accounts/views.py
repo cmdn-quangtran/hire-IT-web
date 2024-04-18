@@ -3,7 +3,9 @@ from rest_framework import status, permissions, viewsets, generics
 from rest_framework import  permissions
 from rest_framework.decorators import action
 from django.conf import settings
-from .serializers import  LoginSerializer, MyTokenObtainPairSerializer, RecruiterRegisterSerializer, UserRegisterSerializer
+
+from accounts.emails import send_email_with_template
+from .serializers import  LoginSerializer, MyTokenObtainPairSerializer, RecruiterRegisterSerializer, UserRegisterSerializer, VertifyEmailSerializer
 from .models import Recruiter, User
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -54,6 +56,7 @@ class RegisterViewSet(viewsets.ViewSet, generics.CreateAPIView):
                 serializer = self.get_serializer(data=request.data)
                 if serializer.is_valid(raise_exception=True):
                     account = serializer.save()
+                    send_email_with_template(serializer.data['email'])
                     return Response({
                         'status': status.HTTP_200_OK,
                         'message': 'Register successfully. Please check your email',
@@ -89,6 +92,7 @@ class RecruiterRegisterViewSet(viewsets.ViewSet, generics.CreateAPIView):
                 serializer = self.get_serializer(data=request.data)
                 if serializer.is_valid(raise_exception=True):
                     account = serializer.save()
+                    send_email_with_template(user['email'])
                     serialized_user = UserRegisterSerializer(data=user)
                     return Response({
                         'status': status.HTTP_200_OK,
@@ -112,6 +116,64 @@ class RecruiterRegisterViewSet(viewsets.ViewSet, generics.CreateAPIView):
                 'message': 'Data invalid. Please enter again',
                 'data': serializer.errors
             })
+        
+
+class VerifyEmail(APIView):
+    @swagger_auto_schema(
+        request_body=VertifyEmailSerializer,  # Specify the serializer used for request data
+        responses={
+            status.HTTP_202_ACCEPTED: "Register successful!",  # Add response description
+            status.HTTP_400_BAD_REQUEST: "Invalid data. Please enter again",  # Add response description
+        },
+    )
+    def post(self, request, *args, **kwargs):
+        try:
+            data = request.data
+            serializer = VertifyEmailSerializer(data=data)
+            if serializer.is_valid():
+                email = serializer.data['email']
+                otp = serializer.data['otp']
+                user = User.objects.get(email=email)
+                if not user:
+                    return Response({
+                        'status': status.HTTP_400_BAD_REQUEST,
+                        'message': 'Invalid Email. Please enter again',
+                        'data': serializer.errors
+                    })
+                if user.otp != otp:
+                    return Response({
+                        'status': status.HTTP_400_BAD_REQUEST,
+                        'message': 'Invalid OTP. Please enter again',
+                        'data': serializer.errors
+                    })
+                user.is_verified = True
+                user.save()
+                refresh = MyTokenObtainPairSerializer.get_token(user)
+                return Response({
+                    'status': status.HTTP_202_ACCEPTED,
+                    'message': 'Register successfully!',
+                    'data': {
+                        'email': user.email,
+                        'refresh_token': str(refresh),
+                        'access_token': str(refresh.access_token),
+                        'access_expires': int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds()),
+                        'refresh_expires': int(settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds()),
+                    }
+                })
+            return Response({
+                'status': status.HTTP_400_BAD_REQUEST,
+                'message': 'Invalid data. Please enter again',
+                'data': serializer.errors
+            })
+
+        except Exception as e:
+            print(e)
+            return Response({
+                'status': status.HTTP_400_BAD_REQUEST,
+                'message': 'Invalid data. Please enter again',
+                'data': serializer.errors
+            })
+            
         
 class LoginView(APIView):
     @swagger_auto_schema(
