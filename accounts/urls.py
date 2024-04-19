@@ -3,9 +3,10 @@ from .views import *
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 
-app_name = 'accounts'
+app_name = 'Account'
 router = routers.DefaultRouter()
 
+router.register(r'employees', EmployeeViewSet)
 router.register(r'employee/register', RegisterViewSet, basename='user/register')
 router.register(r'recruiter/register', RecruiterRegisterViewSet, basename='recruiter/register')
 urlpatterns = [

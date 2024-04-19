@@ -165,6 +165,22 @@
         "documentation": {}
     },
     {
+        "label": "BasePermission",
+        "importPath": "rest_framework.permissions",
+        "description": "rest_framework.permissions",
+        "isExtraImport": true,
+        "detail": "rest_framework.permissions",
+        "documentation": {}
+    },
+    {
+        "label": "IsAuthenticated",
+        "importPath": "rest_framework.permissions",
+        "description": "rest_framework.permissions",
+        "isExtraImport": true,
+        "detail": "rest_framework.permissions",
+        "documentation": {}
+    },
+    {
         "label": "serializers",
         "importPath": "rest_framework",
         "description": "rest_framework",
@@ -306,6 +322,14 @@
         "description": "accounts.emails",
         "isExtraImport": true,
         "detail": "accounts.emails",
+        "documentation": {}
+    },
+    {
+        "label": "IsEmployeePermission",
+        "importPath": "accounts.permissions",
+        "description": "accounts.permissions",
+        "isExtraImport": true,
+        "detail": "accounts.permissions",
         "documentation": {}
     },
     {
@@ -512,6 +536,15 @@
         "documentation": {}
     },
     {
+        "label": "IsEmployeePermission",
+        "kind": 6,
+        "importPath": "accounts.permissions",
+        "description": "accounts.permissions",
+        "peekOfCode": "class IsEmployeePermission(BasePermission):\n    def has_permission(self, request, view):\n        try:\n            if request.user.role == 1:\n                return True\n            return False\n        except Exception:\n            print(str(Exception))\n            return False",
+        "detail": "accounts.permissions",
+        "documentation": {}
+    },
+    {
         "label": "MyTokenObtainPairSerializer",
         "kind": 6,
         "importPath": "accounts.serializers",
@@ -552,7 +585,7 @@
         "kind": 6,
         "importPath": "accounts.serializers",
         "description": "accounts.serializers",
-        "peekOfCode": "class VertifyEmailSerializer(serializers.Serializer):\n    email = serializers.EmailField()\n    otp = serializers.CharField(max_length=6)\nclass LoginSerializer(serializers.Serializer):\n    email = serializers.EmailField()\n    password = serializers.CharField()",
+        "peekOfCode": "class VertifyEmailSerializer(serializers.Serializer):\n    email = serializers.EmailField()\n    otp = serializers.CharField(max_length=6)\nclass LoginSerializer(serializers.Serializer):\n    email = serializers.EmailField()\n    password = serializers.CharField()\nclass EmployeeSerializer(serializers.ModelSerializer):\n    account = UserSerializer(required=True)\n    class Meta:\n        model = Employee",
         "detail": "accounts.serializers",
         "documentation": {}
     },
@@ -561,7 +594,25 @@
         "kind": 6,
         "importPath": "accounts.serializers",
         "description": "accounts.serializers",
-        "peekOfCode": "class LoginSerializer(serializers.Serializer):\n    email = serializers.EmailField()\n    password = serializers.CharField()",
+        "peekOfCode": "class LoginSerializer(serializers.Serializer):\n    email = serializers.EmailField()\n    password = serializers.CharField()\nclass EmployeeSerializer(serializers.ModelSerializer):\n    account = UserSerializer(required=True)\n    class Meta:\n        model = Employee\n        fields = '__all__'\nclass RecruiterSerializer(serializers.ModelSerializer):\n    account = UserSerializer(required=True)",
+        "detail": "accounts.serializers",
+        "documentation": {}
+    },
+    {
+        "label": "EmployeeSerializer",
+        "kind": 6,
+        "importPath": "accounts.serializers",
+        "description": "accounts.serializers",
+        "peekOfCode": "class EmployeeSerializer(serializers.ModelSerializer):\n    account = UserSerializer(required=True)\n    class Meta:\n        model = Employee\n        fields = '__all__'\nclass RecruiterSerializer(serializers.ModelSerializer):\n    account = UserSerializer(required=True)\n    class Meta:\n        model = Recruiter\n        fields = '__all__'",
+        "detail": "accounts.serializers",
+        "documentation": {}
+    },
+    {
+        "label": "RecruiterSerializer",
+        "kind": 6,
+        "importPath": "accounts.serializers",
+        "description": "accounts.serializers",
+        "peekOfCode": "class RecruiterSerializer(serializers.ModelSerializer):\n    account = UserSerializer(required=True)\n    class Meta:\n        model = Recruiter\n        fields = '__all__'",
         "detail": "accounts.serializers",
         "documentation": {}
     },
@@ -570,7 +621,7 @@
         "kind": 5,
         "importPath": "accounts.urls",
         "description": "accounts.urls",
-        "peekOfCode": "app_name = 'accounts'\nrouter = routers.DefaultRouter()\nrouter.register(r'employee/register', RegisterViewSet, basename='user/register')\nrouter.register(r'recruiter/register', RecruiterRegisterViewSet, basename='recruiter/register')\nurlpatterns = [\n    path('api/token/', csrf_exempt(MyTokenObtainPairView.as_view()), name='token_obtain_pair'),\n    path('api/token/refresh/', csrf_exempt(MyTokenRefreshView.as_view()), name='token_refresh'),\n    path('employee/login/', csrf_exempt(LoginView.as_view()), name='login'),\n    path('employee/verify-email/', VerifyEmail.as_view(), name='verify-email'),\n]",
+        "peekOfCode": "app_name = 'Account'\nrouter = routers.DefaultRouter()\nrouter.register(r'employees', EmployeeViewSet)\nrouter.register(r'employee/register', RegisterViewSet, basename='user/register')\nrouter.register(r'recruiter/register', RecruiterRegisterViewSet, basename='recruiter/register')\nurlpatterns = [\n    path('api/token/', csrf_exempt(MyTokenObtainPairView.as_view()), name='token_obtain_pair'),\n    path('api/token/refresh/', csrf_exempt(MyTokenRefreshView.as_view()), name='token_refresh'),\n    path('employee/login/', csrf_exempt(LoginView.as_view()), name='login'),\n    path('employee/verify-email/', VerifyEmail.as_view(), name='verify-email'),",
         "detail": "accounts.urls",
         "documentation": {}
     },
@@ -579,7 +630,7 @@
         "kind": 5,
         "importPath": "accounts.urls",
         "description": "accounts.urls",
-        "peekOfCode": "router = routers.DefaultRouter()\nrouter.register(r'employee/register', RegisterViewSet, basename='user/register')\nrouter.register(r'recruiter/register', RecruiterRegisterViewSet, basename='recruiter/register')\nurlpatterns = [\n    path('api/token/', csrf_exempt(MyTokenObtainPairView.as_view()), name='token_obtain_pair'),\n    path('api/token/refresh/', csrf_exempt(MyTokenRefreshView.as_view()), name='token_refresh'),\n    path('employee/login/', csrf_exempt(LoginView.as_view()), name='login'),\n    path('employee/verify-email/', VerifyEmail.as_view(), name='verify-email'),\n]\nurlpatterns += router.urls",
+        "peekOfCode": "router = routers.DefaultRouter()\nrouter.register(r'employees', EmployeeViewSet)\nrouter.register(r'employee/register', RegisterViewSet, basename='user/register')\nrouter.register(r'recruiter/register', RecruiterRegisterViewSet, basename='recruiter/register')\nurlpatterns = [\n    path('api/token/', csrf_exempt(MyTokenObtainPairView.as_view()), name='token_obtain_pair'),\n    path('api/token/refresh/', csrf_exempt(MyTokenRefreshView.as_view()), name='token_refresh'),\n    path('employee/login/', csrf_exempt(LoginView.as_view()), name='login'),\n    path('employee/verify-email/', VerifyEmail.as_view(), name='verify-email'),\n]",
         "detail": "accounts.urls",
         "documentation": {}
     },
@@ -643,6 +694,15 @@
         "importPath": "accounts.views",
         "description": "accounts.views",
         "peekOfCode": "class LoginView(APIView):\n    @swagger_auto_schema(\n        request_body=LoginSerializer,  # Specify the serializer used for request data\n        responses={\n            status.HTTP_202_ACCEPTED: \"Login successful\",  # Add response description\n            status.HTTP_400_BAD_REQUEST: \"Invalid password\",  # Add response description\n            status.HTTP_406_NOT_ACCEPTABLE: \"Account is not verified. Please try again\",  # Add response description\n        },\n    )\n    def post(self, request, *args, **kwargs):",
+        "detail": "accounts.views",
+        "documentation": {}
+    },
+    {
+        "label": "EmployeeViewSet",
+        "kind": 6,
+        "importPath": "accounts.views",
+        "description": "accounts.views",
+        "peekOfCode": "class EmployeeViewSet(viewsets.ModelViewSet):\n    queryset = Employee.objects.select_related('account')\n    permission_classes = [IsEmployeePermission, IsAuthenticated]\n    serializer_class = EmployeeSerializer",
         "detail": "accounts.views",
         "documentation": {}
     },
