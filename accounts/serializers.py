@@ -93,3 +93,16 @@ class VertifyEmailSerializer(serializers.Serializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
+
+
+class EmployeeSerializer(serializers.ModelSerializer):
+    account = UserSerializer(required=True)
+    class Meta:
+        model = Employee
+        fields = '__all__'
+
+class RecruiterSerializer(serializers.ModelSerializer):
+    account = UserSerializer(required=True)
+    class Meta:
+        model = Recruiter
+        fields = '__all__'

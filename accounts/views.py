@@ -5,13 +5,15 @@ from rest_framework.decorators import action
 from django.conf import settings
 
 from accounts.emails import send_email_with_template
-from .serializers import  LoginSerializer, MyTokenObtainPairSerializer, RecruiterRegisterSerializer, UserRegisterSerializer, VertifyEmailSerializer
-from .models import Recruiter, User
+from accounts.permissions import IsEmployeePermission
+from .serializers import  EmployeeSerializer, LoginSerializer, MyTokenObtainPairSerializer, RecruiterRegisterSerializer, UserRegisterSerializer, VertifyEmailSerializer
+from .models import Employee, Recruiter, User
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
 from drf_yasg.utils import swagger_auto_schema
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -230,3 +232,9 @@ class LoginView(APIView):
                 'message': 'Invalid data. Please enter again',
                 'data': {}
             })
+
+class EmployeeViewSet(viewsets.ModelViewSet):
+    queryset = Employee.objects.select_related('account')
+    permission_classes = [IsEmployeePermission, IsAuthenticated]
+    serializer_class = EmployeeSerializer
+
