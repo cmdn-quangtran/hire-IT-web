@@ -73,3 +73,13 @@ class JobRequirement(models.Model):
 
     class Meta:
         db_table = 'JobRequirement'
+
+class ExtractCV(models.Model):
+    employee = models.OneToOneField(Employee, on_delete=models.CASCADE, primary_key=True, related_name="extract_cv")
+    phone_number = models.CharField(null=True, blank=True, max_length=12)
+    location = models.CharField(null=True, blank=True, max_length=100)
+    skills = models.TextField()
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = 'ExtractCV'

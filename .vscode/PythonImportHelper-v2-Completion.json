@@ -49,6 +49,22 @@
         "documentation": {}
     },
     {
+        "label": "migrations",
+        "importPath": "django.db",
+        "description": "django.db",
+        "isExtraImport": true,
+        "detail": "django.db",
+        "documentation": {}
+    },
+    {
+        "label": "models",
+        "importPath": "django.db",
+        "description": "django.db",
+        "isExtraImport": true,
+        "detail": "django.db",
+        "documentation": {}
+    },
+    {
         "label": "models",
         "importPath": "django.db",
         "description": "django.db",
@@ -309,6 +325,76 @@
         "documentation": {}
     },
     {
+        "label": "BytesIO",
+        "importPath": "io",
+        "description": "io",
+        "isExtraImport": true,
+        "detail": "io",
+        "documentation": {}
+    },
+    {
+        "label": "requests",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "requests",
+        "description": "requests",
+        "detail": "requests",
+        "documentation": {}
+    },
+    {
+        "label": "extract_text",
+        "importPath": "pdfminer.high_level",
+        "description": "pdfminer.high_level",
+        "isExtraImport": true,
+        "detail": "pdfminer.high_level",
+        "documentation": {}
+    },
+    {
+        "label": "spacy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "spacy",
+        "description": "spacy",
+        "detail": "spacy",
+        "documentation": {}
+    },
+    {
+        "label": "re",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "re",
+        "description": "re",
+        "detail": "re",
+        "documentation": {}
+    },
+    {
+        "label": "phonenumbers",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "phonenumbers",
+        "description": "phonenumbers",
+        "detail": "phonenumbers",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "pandas",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pandas",
+        "description": "pandas",
+        "detail": "pandas",
+        "documentation": {}
+    },
+    {
         "label": "Response",
         "importPath": "rest_framework.response",
         "description": "rest_framework.response",
@@ -366,6 +452,38 @@
         "documentation": {}
     },
     {
+        "label": "extract_location",
+        "importPath": "accounts.utils",
+        "description": "accounts.utils",
+        "isExtraImport": true,
+        "detail": "accounts.utils",
+        "documentation": {}
+    },
+    {
+        "label": "extract_phone_number",
+        "importPath": "accounts.utils",
+        "description": "accounts.utils",
+        "isExtraImport": true,
+        "detail": "accounts.utils",
+        "documentation": {}
+    },
+    {
+        "label": "extract_skills",
+        "importPath": "accounts.utils",
+        "description": "accounts.utils",
+        "isExtraImport": true,
+        "detail": "accounts.utils",
+        "documentation": {}
+    },
+    {
+        "label": "extract_text_from_pdf",
+        "importPath": "accounts.utils",
+        "description": "accounts.utils",
+        "isExtraImport": true,
+        "detail": "accounts.utils",
+        "documentation": {}
+    },
+    {
         "label": "TokenObtainPairView",
         "importPath": "rest_framework_simplejwt.views",
         "description": "rest_framework_simplejwt.views",
@@ -414,12 +532,11 @@
         "documentation": {}
     },
     {
-        "label": "os",
-        "kind": 6,
+        "label": "GenericAPIView",
+        "importPath": "rest_framework.generics",
+        "description": "rest_framework.generics",
         "isExtraImport": true,
-        "importPath": "os",
-        "description": "os",
-        "detail": "os",
+        "detail": "rest_framework.generics",
         "documentation": {}
     },
     {
@@ -515,12 +632,48 @@
         "documentation": {}
     },
     {
+        "label": "Migration",
+        "kind": 6,
+        "importPath": "accounts.migrations.0002_extractcv",
+        "description": "accounts.migrations.0002_extractcv",
+        "peekOfCode": "class Migration(migrations.Migration):\n    dependencies = [\n        ('accounts', '0001_initial'),\n    ]\n    operations = [\n        migrations.CreateModel(\n            name='ExtractCV',\n            fields=[\n                ('employee', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, primary_key=True, related_name='extract_cv', serialize=False, to='accounts.employee')),\n                ('phone_number', models.CharField(blank=True, max_length=12, null=True)),",
+        "detail": "accounts.migrations.0002_extractcv",
+        "documentation": {}
+    },
+    {
         "label": "AccountsConfig",
         "kind": 6,
         "importPath": "accounts.apps",
         "description": "accounts.apps",
         "peekOfCode": "class AccountsConfig(AppConfig):\n    default_auto_field = 'django.db.models.BigAutoField'\n    name = 'accounts'",
         "detail": "accounts.apps",
+        "documentation": {}
+    },
+    {
+        "label": "PROVINCES_1",
+        "kind": 5,
+        "importPath": "accounts.constant",
+        "description": "accounts.constant",
+        "peekOfCode": "PROVINCES_1 = ['An Giang', 'Bà Rịa-Vũng Tàu', 'Bắc Giang', 'Bắc Kạn', 'Bạc Liêu', 'Bắc Ninh', 'Bến Tre', 'Bình Định', 'Bình Dương', 'Bình Phước', 'Bình Thuận', 'Cà Mau', 'Cần Thơ', 'Cao Bằng', 'Đà Nẵng', 'Đắk Lắk', 'Đắk Nông', 'Điện Biên', 'Đồng Nai', 'Đồng Tháp', 'Gia Lai', 'Hà Giang', 'Hà Nam', 'Hà Nội', 'Hà Tĩnh', 'Hải Dương', 'Hải Phòng', 'Hậu Giang', 'Hòa Bình', 'Hưng Yên', 'Khánh Hòa', 'Kiên Giang', 'Kon Tum', 'Lai Châu', 'Lâm Đồng', 'Lạng Sơn', 'Lào Cai', 'Long An', 'Nam Định', 'Nghệ An', 'Ninh Bình', 'Ninh Thuận', 'Phú Thọ', 'Phú Yên', 'Quảng Bình', 'Quảng Nam', 'Quảng Ngãi', 'Quảng Ninh', 'Quảng Trị', 'Sóc Trăng', 'Sơn La', 'Tây Ninh', 'Thái Bình', 'Thái Nguyên', 'Thanh Hóa', 'Thừa Thiên-Huế', \"Thừa Thiên Huế\", 'Tiền Giang', 'TP Hồ Chí Minh', 'Trà Vinh', 'Tuyên Quang', 'Vĩnh Long', 'Vĩnh Phúc', 'Yên Bái']\nPROVINCES_2 = [\n    \"An Giang\",\n    \"Ba Ria - Vung Tau\",\n    \"Bac Giang\",\n    \"Bac Kan\",\n    \"Bac Lieu\",\n    \"Bac Ninh\",\n    \"Ben Tre\",\n    \"Binh Dinh\",",
+        "detail": "accounts.constant",
+        "documentation": {}
+    },
+    {
+        "label": "PROVINCES_2",
+        "kind": 5,
+        "importPath": "accounts.constant",
+        "description": "accounts.constant",
+        "peekOfCode": "PROVINCES_2 = [\n    \"An Giang\",\n    \"Ba Ria - Vung Tau\",\n    \"Bac Giang\",\n    \"Bac Kan\",\n    \"Bac Lieu\",\n    \"Bac Ninh\",\n    \"Ben Tre\",\n    \"Binh Dinh\",\n    \"Binh Duong\",",
+        "detail": "accounts.constant",
+        "documentation": {}
+    },
+    {
+        "label": "PROVINCES",
+        "kind": 5,
+        "importPath": "accounts.constant",
+        "description": "accounts.constant",
+        "peekOfCode": "PROVINCES = PROVINCES_1 + PROVINCES_2",
+        "detail": "accounts.constant",
         "documentation": {}
     },
     {
@@ -583,6 +736,15 @@
         "importPath": "accounts.models",
         "description": "accounts.models",
         "peekOfCode": "class JobRequirement(models.Model):\n    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, auto_created=True)\n    recruiter = models.ForeignKey(Recruiter, on_delete=models.CASCADE, related_name='job_requirements')\n    job_name = models.CharField(max_length=255)\n    location = models.CharField(null=True, blank=True, max_length=100)\n    pdf_upload = models.CharField(null=True, max_length=1000, blank=True, default=None)\n    skills = models.TextField(null=True, blank=True)\n    active = models.BooleanField(default=True)\n    class Meta:\n        db_table = 'JobRequirement'",
+        "detail": "accounts.models",
+        "documentation": {}
+    },
+    {
+        "label": "ExtractCV",
+        "kind": 6,
+        "importPath": "accounts.models",
+        "description": "accounts.models",
+        "peekOfCode": "class ExtractCV(models.Model):\n    employee = models.OneToOneField(Employee, on_delete=models.CASCADE, primary_key=True, related_name=\"extract_cv\")\n    phone_number = models.CharField(null=True, blank=True, max_length=12)\n    location = models.CharField(null=True, blank=True, max_length=100)\n    skills = models.TextField()\n    active = models.BooleanField(default=True)\n    class Meta:\n        db_table = 'ExtractCV'",
         "detail": "accounts.models",
         "documentation": {}
     },
@@ -672,7 +834,7 @@
         "kind": 6,
         "importPath": "accounts.serializers",
         "description": "accounts.serializers",
-        "peekOfCode": "class RecruiterSerializer(serializers.ModelSerializer):\n    account = UserSerializer(required=True)\n    class Meta:\n        model = Recruiter\n        fields = '__all__'\nclass PDFFileSerializer(serializers.Serializer):\n    pdf_file = serializers.FileField(validators=[FileExtensionValidator(['pdf'])])",
+        "peekOfCode": "class RecruiterSerializer(serializers.ModelSerializer):\n    account = UserSerializer(required=True)\n    class Meta:\n        model = Recruiter\n        fields = '__all__'\nclass PDFFileSerializer(serializers.Serializer):\n    pdf_file = serializers.FileField(validators=[FileExtensionValidator(['pdf'])])\nclass ExtractCVGetAll(serializers.ModelSerializer):\n    employee = serializers.SerializerMethodField()\n    class Meta:",
         "detail": "accounts.serializers",
         "documentation": {}
     },
@@ -681,7 +843,25 @@
         "kind": 6,
         "importPath": "accounts.serializers",
         "description": "accounts.serializers",
-        "peekOfCode": "class PDFFileSerializer(serializers.Serializer):\n    pdf_file = serializers.FileField(validators=[FileExtensionValidator(['pdf'])])",
+        "peekOfCode": "class PDFFileSerializer(serializers.Serializer):\n    pdf_file = serializers.FileField(validators=[FileExtensionValidator(['pdf'])])\nclass ExtractCVGetAll(serializers.ModelSerializer):\n    employee = serializers.SerializerMethodField()\n    class Meta:\n        model = ExtractCV\n        fields = '__all__'\n    def get_employee(self, obj):\n        return EmployeeSerializer(obj.employee).data\nclass ExtractCVCreateSerializer(serializers.Serializer):",
+        "detail": "accounts.serializers",
+        "documentation": {}
+    },
+    {
+        "label": "ExtractCVGetAll",
+        "kind": 6,
+        "importPath": "accounts.serializers",
+        "description": "accounts.serializers",
+        "peekOfCode": "class ExtractCVGetAll(serializers.ModelSerializer):\n    employee = serializers.SerializerMethodField()\n    class Meta:\n        model = ExtractCV\n        fields = '__all__'\n    def get_employee(self, obj):\n        return EmployeeSerializer(obj.employee).data\nclass ExtractCVCreateSerializer(serializers.Serializer):\n    location = serializers.CharField(max_length=255)\n    phone_number = serializers.CharField(max_length=20)",
+        "detail": "accounts.serializers",
+        "documentation": {}
+    },
+    {
+        "label": "ExtractCVCreateSerializer",
+        "kind": 6,
+        "importPath": "accounts.serializers",
+        "description": "accounts.serializers",
+        "peekOfCode": "class ExtractCVCreateSerializer(serializers.Serializer):\n    location = serializers.CharField(max_length=255)\n    phone_number = serializers.CharField(max_length=20)\n    skills = serializers.CharField()",
         "detail": "accounts.serializers",
         "documentation": {}
     },
@@ -708,8 +888,53 @@
         "kind": 5,
         "importPath": "accounts.urls",
         "description": "accounts.urls",
-        "peekOfCode": "urlpatterns = [\n    path('api/token/', csrf_exempt(MyTokenObtainPairView.as_view()), name='token_obtain_pair'),\n    path('api/token/refresh/', csrf_exempt(MyTokenRefreshView.as_view()), name='token_refresh'),\n    path('employee/login/', csrf_exempt(LoginView.as_view()), name='login'),\n    path('employee/verify-email/', VerifyEmail.as_view(), name='verify-email'),\n    path('employee/pdf-upload/', UploadPDFView.as_view(), name='pdf_upload'),\n]\nurlpatterns += router.urls",
+        "peekOfCode": "urlpatterns = [\n    path('api/token/', csrf_exempt(MyTokenObtainPairView.as_view()), name='token_obtain_pair'),\n    path('api/token/refresh/', csrf_exempt(MyTokenRefreshView.as_view()), name='token_refresh'),\n    path('employee/login/', csrf_exempt(LoginView.as_view()), name='login'),\n    path('employee/verify-email/', VerifyEmail.as_view(), name='verify-email'),\n    path('employee/pdf-upload/', UploadPDFView.as_view(), name='pdf_upload'),\n    path('employee/verify-cv/', ExtractCVCreateView.as_view(), name='verify-job'),\n    path('employee/find-job/', ExtractCVView.as_view(), name='extract_cv'),\n]\nurlpatterns += router.urls",
         "detail": "accounts.urls",
+        "documentation": {}
+    },
+    {
+        "label": "extract_text_from_pdf",
+        "kind": 2,
+        "importPath": "accounts.utils",
+        "description": "accounts.utils",
+        "peekOfCode": "def extract_text_from_pdf(pdf_path):\n    response = requests.get(pdf_path)\n    pdf_bytes = BytesIO(response.content)\n    text = extract_text(pdf_bytes)\n    return text\ndef extract_phone_number(text) -> list:\n    phone_numbers = []\n    for match in phonenumbers.PhoneNumberMatcher(text, \"VN\"):\n        phone_numbers.append(re.sub(r'\\D', '', phonenumbers.format_number(match.number, phonenumbers.PhoneNumberFormat.E164)))\n    return phone_numbers",
+        "detail": "accounts.utils",
+        "documentation": {}
+    },
+    {
+        "label": "extract_phone_number",
+        "kind": 2,
+        "importPath": "accounts.utils",
+        "description": "accounts.utils",
+        "peekOfCode": "def extract_phone_number(text) -> list:\n    phone_numbers = []\n    for match in phonenumbers.PhoneNumberMatcher(text, \"VN\"):\n        phone_numbers.append(re.sub(r'\\D', '', phonenumbers.format_number(match.number, phonenumbers.PhoneNumberFormat.E164)))\n    return phone_numbers\ndef extract_location(text):\n    # List of location names in Vietnamese\n    locations = PROVINCES\n    # Find all matches of the location names in the text\n    matches = [loc for loc in locations if re.search(loc, text, re.IGNORECASE)]",
+        "detail": "accounts.utils",
+        "documentation": {}
+    },
+    {
+        "label": "extract_location",
+        "kind": 2,
+        "importPath": "accounts.utils",
+        "description": "accounts.utils",
+        "peekOfCode": "def extract_location(text):\n    # List of location names in Vietnamese\n    locations = PROVINCES\n    # Find all matches of the location names in the text\n    matches = [loc for loc in locations if re.search(loc, text, re.IGNORECASE)]\n    if matches:\n        if matches[0] in PROVINCES_2:\n            index = PROVINCES_2.index(matches[0])\n            return PROVINCES_1[index]\n        return matches[0]",
+        "detail": "accounts.utils",
+        "documentation": {}
+    },
+    {
+        "label": "extract_skills",
+        "kind": 2,
+        "importPath": "accounts.utils",
+        "description": "accounts.utils",
+        "peekOfCode": "def extract_skills(nlp_text):\n    data = pd.read_csv(os.path.join(os.path.dirname(__file__), 'skills.csv'))\n    SKILLS = list(data.columns.values)\n    doc = nlp(nlp_text)\n    skills = []\n    for token in doc:\n        if token.text.lower() in SKILLS:\n            skills.append(token.text)\n    for chunk in doc.noun_chunks:\n        chunk_text = chunk.text.lower()",
+        "detail": "accounts.utils",
+        "documentation": {}
+    },
+    {
+        "label": "nlp",
+        "kind": 5,
+        "importPath": "accounts.utils",
+        "description": "accounts.utils",
+        "peekOfCode": "nlp = spacy.load(\"en_core_web_sm\")\ndef extract_skills(nlp_text):\n    data = pd.read_csv(os.path.join(os.path.dirname(__file__), 'skills.csv'))\n    SKILLS = list(data.columns.values)\n    doc = nlp(nlp_text)\n    skills = []\n    for token in doc:\n        if token.text.lower() in SKILLS:\n            skills.append(token.text)\n    for chunk in doc.noun_chunks:",
+        "detail": "accounts.utils",
         "documentation": {}
     },
     {
@@ -781,6 +1006,24 @@
         "importPath": "accounts.views",
         "description": "accounts.views",
         "peekOfCode": "class UploadPDFView(APIView):\n    queryset = Employee.objects.select_related('account')\n    permission_classes = [IsEmployeePermission, IsAuthenticated]\n    parser_classes = (MultiPartParser, FormParser)\n    @swagger_auto_schema(\n        request_body=PDFFileSerializer,\n        operation_description=\"Upload a PDF file\",\n        responses={\n            200: \"{'url': 'https://cloudinary.com/your_url'}\",\n            400: \"{'error': 'Invalid file format'}\",",
+        "detail": "accounts.views",
+        "documentation": {}
+    },
+    {
+        "label": "ExtractCVView",
+        "kind": 6,
+        "importPath": "accounts.views",
+        "description": "accounts.views",
+        "peekOfCode": "class ExtractCVView(GenericAPIView):\n    permission_classes = [IsEmployeePermission, IsAuthenticated]\n    serializer_class = EmployeeSerializer\n    @swagger_auto_schema(\n        operation_description=\"A custom description for the ExtractCVView\",\n        responses= {\n            status.HTTP_200_OK: \"Extract successful\",  # Add response description\n            status.HTTP_401_UNAUTHORIZED: \"Turned on Failed\",  # Add response description\n        }\n    )",
+        "detail": "accounts.views",
+        "documentation": {}
+    },
+    {
+        "label": "ExtractCVCreateView",
+        "kind": 6,
+        "importPath": "accounts.views",
+        "description": "accounts.views",
+        "peekOfCode": "class ExtractCVCreateView(generics.GenericAPIView):\n    permission_classes = [IsEmployeePermission, IsAuthenticated]\n    serializer_class = ExtractCVCreateSerializer\n    @swagger_auto_schema(\n        operation_description=\"A custom description for the ExtractCVCreateView\",\n        request_body=ExtractCVCreateSerializer,\n        responses= {\n            status.HTTP_200_OK: \"Turned on successfully\",  # Add response description\n            status.HTTP_401_UNAUTHORIZED: \"Turned on Failed\",  # Add response description\n        }",
         "detail": "accounts.views",
         "documentation": {}
     },
@@ -879,7 +1122,16 @@
         "kind": 5,
         "importPath": "core.settings",
         "description": "core.settings",
-        "peekOfCode": "WSGI_APPLICATION = 'core.wsgi.application'\n# Database\n# https://docs.djangoproject.com/en/4.2/ref/settings/#databases\nDATABASES = {\n    'default': {\n       'ENGINE': 'django.db.backends.postgresql',\n        'NAME': 'hireIt',\n        'USER': 'hire_admin',\n        'PASSWORD': 'pAssw0rd',\n        'HOST': 'localhost',",
+        "peekOfCode": "WSGI_APPLICATION = 'core.wsgi.application'\nSECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'\n# Database\n# https://docs.djangoproject.com/en/4.2/ref/settings/#databases\nDATABASES = {\n    'default': {\n       'ENGINE': 'django.db.backends.postgresql',\n        'NAME': 'postgres',\n        'USER': 'hire_it_admin',\n        'PASSWORD':'Quang12345!',",
+        "detail": "core.settings",
+        "documentation": {}
+    },
+    {
+        "label": "SECURE_REFERRER_POLICY",
+        "kind": 5,
+        "importPath": "core.settings",
+        "description": "core.settings",
+        "peekOfCode": "SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'\n# Database\n# https://docs.djangoproject.com/en/4.2/ref/settings/#databases\nDATABASES = {\n    'default': {\n       'ENGINE': 'django.db.backends.postgresql',\n        'NAME': 'postgres',\n        'USER': 'hire_it_admin',\n        'PASSWORD':'Quang12345!',\n        'HOST': 'hire-it.postgres.database.azure.com',",
         "detail": "core.settings",
         "documentation": {}
     },
@@ -888,7 +1140,7 @@
         "kind": 5,
         "importPath": "core.settings",
         "description": "core.settings",
-        "peekOfCode": "DATABASES = {\n    'default': {\n       'ENGINE': 'django.db.backends.postgresql',\n        'NAME': 'hireIt',\n        'USER': 'hire_admin',\n        'PASSWORD': 'pAssw0rd',\n        'HOST': 'localhost',\n        'PORT': '5432',\n    }\n}",
+        "peekOfCode": "DATABASES = {\n    'default': {\n       'ENGINE': 'django.db.backends.postgresql',\n        'NAME': 'postgres',\n        'USER': 'hire_it_admin',\n        'PASSWORD':'Quang12345!',\n        'HOST': 'hire-it.postgres.database.azure.com',\n        'PORT': 5432,\n    }\n}",
         "detail": "core.settings",
         "documentation": {}
     },

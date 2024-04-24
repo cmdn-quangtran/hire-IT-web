@@ -88,7 +88,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'core.wsgi.application'
-
+SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -96,11 +96,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'hireIt',
-        'USER': 'hire_admin',
-        'PASSWORD': 'pAssw0rd',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': 'postgres',
+        'USER': 'hire_it_admin',
+        'PASSWORD':'Quang12345!',
+        'HOST': 'hire-it.postgres.database.azure.com',
+        'PORT': 5432,
     }
 }
 

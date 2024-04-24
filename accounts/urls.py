@@ -15,6 +15,8 @@ urlpatterns = [
     path('employee/login/', csrf_exempt(LoginView.as_view()), name='login'),
     path('employee/verify-email/', VerifyEmail.as_view(), name='verify-email'),
     path('employee/pdf-upload/', UploadPDFView.as_view(), name='pdf_upload'),
+    path('employee/verify-cv/', ExtractCVCreateView.as_view(), name='verify-job'),
+    path('employee/find-job/', ExtractCVView.as_view(), name='extract_cv'),
 ]
 
 urlpatterns += router.urls
