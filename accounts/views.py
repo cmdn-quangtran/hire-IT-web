@@ -3,10 +3,11 @@ from rest_framework import status, permissions, viewsets, generics
 from rest_framework import  permissions
 from rest_framework.decorators import action
 from django.conf import settings
-
+from rest_framework.parsers import MultiPartParser, FormParser
+import cloudinary.uploader
 from accounts.emails import send_email_with_template
 from accounts.permissions import IsEmployeePermission
-from .serializers import  EmployeeSerializer, LoginSerializer, MyTokenObtainPairSerializer, RecruiterRegisterSerializer, UserRegisterSerializer, VertifyEmailSerializer
+from .serializers import  EmployeeSerializer, LoginSerializer, MyTokenObtainPairSerializer, PDFFileSerializer, RecruiterRegisterSerializer, UserRegisterSerializer, VertifyEmailSerializer
 from .models import Employee, Recruiter, User
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -238,3 +239,60 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     permission_classes = [IsEmployeePermission, IsAuthenticated]
     serializer_class = EmployeeSerializer
 
+
+class UploadPDFView(APIView):
+    queryset = Employee.objects.select_related('account')
+    permission_classes = [IsEmployeePermission, IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)
+    @swagger_auto_schema(
+        request_body=PDFFileSerializer,
+        operation_description="Upload a PDF file",
+        responses={
+            200: "{'url': 'https://cloudinary.com/your_url'}",
+            400: "{'error': 'Invalid file format'}",
+        },
+    )
+    def post(self, request, *args, **kwargs):
+        try:
+            if 'pdf_file' not in request.FILES:
+                response = {
+                    "status": status.HTTP_400_BAD_REQUEST,
+                    "message": "No PDF file uploaded",
+                    "data": {},
+                }
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            pdf_file = request.FILES['pdf_file']
+            if pdf_file.name == '':
+                response = {
+                    "status": status.HTTP_400_BAD_REQUEST,
+                    "message": "Empty filename",
+                    "data": {},
+                }
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            if not pdf_file.name.endswith('.pdf'):
+                response = {
+                    "status": status.HTTP_400_BAD_REQUEST,
+                    "message": "Invalid file format",
+                    "data": {},
+                }
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            employee = Employee.objects.get(account_id=request.user.id)
+            uploaded_file = cloudinary.uploader.upload(pdf_file,folder=f'hireIT/employees/{request.user.id}', access_mode="public")
+            print(uploaded_file['secure_url'])
+            # return Response({'url': uploaded_file['secure_url']}, status=200)
+            employee.pdf_file = uploaded_file['secure_url']
+            employee.save()
+            response = {
+                "status": status.HTTP_200_OK,
+                "message": "PDF file uploaded successfully",
+                "data": {"url": uploaded_file['secure_url']},
+            }
+            return Response(response, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            response = {
+                "status": status.HTTP_401_UNAUTHORIZED,
+                "message": "Upload Failed",
+                "data": {},
+            } 
+            return Response(response, status=status.HTTP_401_UNAUTHORIZED) 

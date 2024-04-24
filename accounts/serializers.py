@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import User, Employee, Recruiter
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.hashers import make_password
+from django.core.validators import FileExtensionValidator
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -106,3 +107,6 @@ class RecruiterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recruiter
         fields = '__all__'
+
+class PDFFileSerializer(serializers.Serializer):
+    pdf_file = serializers.FileField(validators=[FileExtensionValidator(['pdf'])])
