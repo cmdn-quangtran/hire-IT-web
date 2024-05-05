@@ -1,9 +1,14 @@
 version: "3.7"
 services:
-  # web:
-  #   build: .
-  #   ports:
-  #     - "8000:8000"
+  web:
+    container_name: hire_it_api
+    image: hire_it
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
   database:
     image: postgres:15-alpine3.18
     ports:

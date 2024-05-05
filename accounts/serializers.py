@@ -1,8 +1,9 @@
 import uuid
 from rest_framework import serializers
-from .models import User, Employee, Recruiter
+from .models import ExtractCV, User, Employee, Recruiter
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.hashers import make_password
+from django.core.validators import FileExtensionValidator
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -106,3 +107,19 @@ class RecruiterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recruiter
         fields = '__all__'
+
+class PDFFileSerializer(serializers.Serializer):
+    pdf_file = serializers.FileField(validators=[FileExtensionValidator(['pdf'])])
+
+class ExtractCVGetAll(serializers.ModelSerializer):
+    employee = serializers.SerializerMethodField()
+    class Meta:
+        model = ExtractCV
+        fields = '__all__'
+    def get_employee(self, obj):
+        return EmployeeSerializer(obj.employee).data
+    
+class ExtractCVCreateSerializer(serializers.Serializer):
+    location = serializers.CharField(max_length=255)
+    phone_number = serializers.CharField(max_length=20)
+    skills = serializers.CharField()
