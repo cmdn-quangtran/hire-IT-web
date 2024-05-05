@@ -97,9 +97,9 @@ DATABASES = {
     'default': {
        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
-        'USER': 'hire_it_admin',
+        'USER': 'hire_admin',
         'PASSWORD':'Quang12345!',
-        'HOST': 'hire-it.postgres.database.azure.com',
+        'HOST': 'duyquang.postgres.database.azure.com',
         'PORT': 5432,
     }
 }

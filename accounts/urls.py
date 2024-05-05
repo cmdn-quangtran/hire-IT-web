@@ -17,6 +17,7 @@ urlpatterns = [
     path('employee/pdf-upload/', UploadPDFView.as_view(), name='pdf_upload'),
     path('employee/verify-cv/', ExtractCVCreateView.as_view(), name='verify-job'),
     path('employee/find-job/', ExtractCVView.as_view(), name='extract_cv'),
+    path('user/get-information/', GetInformation.as_view(), name='get-infomation'),
 ]
 
 urlpatterns += router.urls

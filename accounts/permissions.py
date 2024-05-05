@@ -11,7 +11,7 @@ class IsEmployeePermission(BasePermission):
             print(str(Exception))
             return False
         
-class IsRecruiterermission(BasePermission):
+class IsRecruiterPermission(BasePermission):
     def has_permission(self, request, view):
         try:
             if request.user.role == 2:

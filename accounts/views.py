@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import status, permissions, viewsets, generics
 from rest_framework import  permissions
@@ -6,9 +7,9 @@ from django.conf import settings
 from rest_framework.parsers import MultiPartParser, FormParser
 import cloudinary.uploader
 from accounts.emails import send_email_with_template
-from accounts.permissions import IsEmployeePermission
+from accounts.permissions import IsEmployeePermission, IsRecruiterPermission
 from accounts.utils import extract_location, extract_phone_number, extract_skills, extract_text_from_pdf
-from .serializers import  EmployeeSerializer, ExtractCVCreateSerializer, LoginSerializer, MyTokenObtainPairSerializer, PDFFileSerializer, RecruiterRegisterSerializer, UserRegisterSerializer, VertifyEmailSerializer
+from .serializers import  EmployeeSerializer, ExtractCVCreateSerializer, LoginSerializer, MyTokenObtainPairSerializer, PDFFileSerializer, RecruiterRegisterSerializer, RecruiterSerializer, UserRegisterSerializer, VertifyEmailSerializer
 from .models import Employee, ExtractCV, Recruiter, User
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -398,3 +399,54 @@ class ExtractCVCreateView(generics.GenericAPIView):
                 "data": {},
             }
             return Response(response, status=status.HTTP_401_UNAUTHORIZED)
+        
+class GetInformation(generics.GenericAPIView):
+    serializer_class_map = {
+        'GET': {
+            'employee': EmployeeSerializer,
+            'recruiter': RecruiterSerializer,
+        }
+    }
+    queryset_map = {
+        'employee': Employee.objects.all(),
+        'recruiter': Recruiter.objects.all(),
+    }
+
+    permission_classes_map = {
+        'GET': {
+            'employee': [IsAuthenticated, IsEmployeePermission],
+            'recruiter': [IsAuthenticated, IsRecruiterPermission],
+        }
+    }
+
+    def get_permissions(self):
+        user_type = 'employee' if self.request.user.role == 1 else 'recruiter'
+        permission_classes = self.permission_classes_map.get(self.request.method, {}).get(user_type, [])
+        return [permission() for permission in permission_classes]
+    
+    def get_serializer_class(self):
+        user_type = 'employee' if self.request.user.role == 1 else 'recruiter'
+        return self.serializer_class_map.get(self.request.method, {}).get(user_type)
+
+    def get(self, request, *args, **kwargs):
+        try:
+            user_type = 'employee' if request.user.role == 1 else 'recruiter'
+            model = Employee if request.user.role == 1 else Recruiter
+            queryset = self.queryset_map[user_type]
+            obj = get_object_or_404(queryset, account_id=request.user.id)
+            serializer_class = self.serializer_class_map['GET'][user_type]
+            serializer = serializer_class(instance=obj)
+            response = {
+                "status": status.HTTP_200_OK,
+                "message": "Successfully",
+                "data": serializer.data,
+            } 
+            return Response(response, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            response = {
+                "status": status.HTTP_401_UNAUTHORIZED,
+                "message": "Get Information Failed",
+                "data": {},
+            } 
+            return Response(response, status=status.HTTP_401_UNAUTHORIZED) 
