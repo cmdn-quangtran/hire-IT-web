@@ -9,7 +9,7 @@ import cloudinary.uploader
 from accounts.emails import send_email_with_template
 from accounts.permissions import IsEmployeePermission, IsRecruiterPermission
 from accounts.utils import extract_location, extract_phone_number, extract_skills, extract_text_from_pdf
-from .serializers import  EmployeeSerializer, ExtractCVCreateSerializer, LoginSerializer, MyTokenObtainPairSerializer, PDFFileSerializer, RecruiterRegisterSerializer, RecruiterSerializer, UserRegisterSerializer, VertifyEmailSerializer
+from .serializers import  EmployeeProfile, EmployeeSerializer, ExtractCVCreateSerializer, LoginSerializer, MyTokenObtainPairSerializer, PDFFileSerializer, RecruiterProfile, RecruiterRegisterSerializer, RecruiterSerializer, UserRegisterSerializer, VertifyEmailSerializer
 from .models import Employee, ExtractCV, Recruiter, User
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -18,6 +18,7 @@ from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import GenericAPIView
+from PIL import Image
 
 # Create your views here.
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -304,6 +305,28 @@ class UploadPDFView(APIView):
             } 
             return Response(response, status=status.HTTP_401_UNAUTHORIZED) 
         
+class DeactivePDFView(APIView):
+    permission_classes = [IsEmployeePermission, IsAuthenticated]
+    def get(self, request):
+        try:
+            employee = Employee.objects.get(account_id=request.user.id)
+            extract_cv = ExtractCV.objects.get(employee=employee)
+            extract_cv.active = False
+            extract_cv.save()
+            response = {
+                    "status": status.HTTP_200_OK,
+                    "message": "Your resume deactivated successfully.",
+                    "data": {},
+                }
+            return Response(response, status=status.HTTP_200_OK)
+        except ExtractCV.DoesNotExist:
+            response = {
+                    "status": status.HTTP_404_NOT_FOUND,
+                    "message": "Your resume not found.",
+                    "data": {},
+                }
+            return Response(response, status=status.HTTP_404_NOT_FOUND)
+        
 class ExtractCVView(GenericAPIView):
     permission_classes = [IsEmployeePermission, IsAuthenticated]
     serializer_class = EmployeeSerializer
@@ -450,3 +473,137 @@ class GetInformation(generics.GenericAPIView):
                 "data": {},
             } 
             return Response(response, status=status.HTTP_401_UNAUTHORIZED) 
+class UpdateEmployeeProfile(generics.GenericAPIView):
+    queryset = Employee.objects.all()
+    permission_classes = [IsEmployeePermission, IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)
+    
+    @swagger_auto_schema(
+        request_body=EmployeeProfile,
+        operation_description="Update employee profile",
+        responses={
+            204: "{'message': 'Upload successfully'}",
+            400: "{'message': 'Upload Failed'}",
+            401: "{'message': 'Unauthorized'}",
+        },
+    )
+    def post(self, request, *args, **kwargs):
+        try:
+            first_name = request.data['first_name']
+            last_name = request.data['last_name']
+            avatar_img = request.FILES.get('avatar_img')
+            print("avatar_img", avatar_img)
+            if  avatar_img is not None:
+                serializer = EmployeeProfile(data=request.data)
+                employee = Employee.objects.get(account_id=request.user.id)
+                upload_result = cloudinary.uploader.upload(avatar_img, resource_type="image")
+                print("upload result", upload_result)
+                employee.avatar_url = upload_result['secure_url']
+                employee.save()
+                employee.account.first_name = first_name
+                employee.account.last_name = last_name
+                employee.account.save()
+                
+                serializer = EmployeeSerializer(employee)
+                
+                response = {
+                    "status": status.HTTP_204_NO_CONTENT,
+                    "message": "Upload successfully",
+                    "data": serializer.data,
+                }
+                return Response(response, status=status.HTTP_204_NO_CONTENT)
+            else:
+                employee = Employee.objects.get(account_id=request.user.id)
+                employee.account.first_name = first_name
+                employee.account.last_name = last_name
+                employee.account.save()
+                serializer = EmployeeSerializer(employee)
+                response = {
+                    "status": status.HTTP_204_NO_CONTENT,
+                    "message": "Upload successfully",
+                    "data": serializer.data,
+                }
+                return Response(response, status=status.HTTP_204_NO_CONTENT)
+        except Employee.DoesNotExist:
+            response = {
+                "status": status.HTTP_401_UNAUTHORIZED,
+                "message": "Unauthorized",
+                "data": {},
+            }
+            return Response(response, status=status.HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            print(str(e))
+            response = {
+                "status": status.HTTP_400_BAD_REQUEST,
+                "message": "Upload Failed",
+                "data": {},
+            }
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        
+class UpdateRecruiterProfile(generics.GenericAPIView):
+    queryset = Employee.objects.all()
+    permission_classes = [IsRecruiterPermission, IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)
+    @swagger_auto_schema(
+        request_body=RecruiterProfile,
+        operation_description="Update recruiter profile",
+        responses={
+            204: "{'message': 'Upload sucessfully'}",
+            401: "{'message': 'Invalid file format'}",
+        },
+    )
+    def post(self, request, *args, **kwargs):
+        try:
+            serializer = RecruiterProfile(data=request.data)
+            first_name = request.data['first_name']
+            last_name = request.data['last_name']
+            avatar_img = request.FILES.get('avatar_img')
+            address = request.data['address']
+            company_name = request.data['company_name']
+            if  avatar_img is not None:
+                upload_result = cloudinary.uploader.upload(avatar_img, resource_type="raw")
+                recruiter = Recruiter.objects.get(account_id=request.user.id)
+                recruiter.account.first_name = first_name
+                recruiter.account.last_name = last_name
+                recruiter.account.save()
+                recruiter.company_name = company_name
+                recruiter.address = address
+                recruiter.avatar_url = upload_result['secure_url']
+                recruiter.save()
+                serializer = RecruiterSerializer(recruiter)
+                response = {
+                        "status": status.HTTP_200_OK,
+                        "message": "Upload sucessfully",
+                        "data": serializer.data,
+                    }
+                return Response(response, status=status.HTTP_200_OK)
+            else:
+                recruiter = Recruiter.objects.get(account_id=request.user.id)
+                recruiter.account.first_name = first_name
+                recruiter.account.last_name = last_name
+                recruiter.account.save()
+                recruiter.company_name = company_name
+                recruiter.address = address
+                recruiter.save()
+                serializer = RecruiterSerializer(recruiter)
+                response = {
+                    "status": status.HTTP_200_OK,
+                    "message": "Upload successfully",
+                    "data": serializer.data,
+                }
+                return Response(response, status=status.HTTP_200_OK)
+        except Recruiter.DoesNotExist:
+            response = {
+                "status": status.HTTP_401_UNAUTHORIZED,
+                "message": "Unauthorized",
+                "data": {},
+            }
+            return Response(response, status=status.HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            print(str(e))
+            response = {
+                "status": status.HTTP_400_BAD_REQUEST,
+                "message": "Upload Failed",
+                "data": {},
+            }
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)  
