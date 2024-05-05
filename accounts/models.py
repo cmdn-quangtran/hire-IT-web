@@ -38,7 +38,7 @@ class User(AbstractUser):
 class Employee(models.Model):
     account = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     avatar_url = models.CharField(null=True, max_length=1000, blank=True,
-                                  default='https://res.cloudinary.com/dq6avgw6n/image/upload/v1683965956/2_lrrhqr.jpg')
+                                  default='https://res.cloudinary.com/dzqfmaj6i/image/upload/v1712999567/hireIT/default/user_default_hx8abj.jpg')
     pdf_file = models.CharField(null=True, max_length=1000, blank=True, default=None)
 
     class Meta:
@@ -53,7 +53,7 @@ class Recruiter(models.Model):
     company_name = models.CharField(null=True, blank=True, max_length=500)
     address = models.CharField(null=True, blank=True, max_length=500)
     avatar_url = models.CharField(null=True, max_length=1000, blank=True,
-                                  default='https://e7.pngegg.com/pngimages/643/98/png-clipart-computer-icons-avatar-mover-business-flat-design-corporate-elderly-care-microphone-heroes-thumbnail.png')
+                                  default='https://res.cloudinary.com/dzqfmaj6i/image/upload/v1712999567/hireIT/default/user_default_hx8abj.jpg')
 
     class Meta:
         db_table = 'Recruiter'

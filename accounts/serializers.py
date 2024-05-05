@@ -123,3 +123,15 @@ class ExtractCVCreateSerializer(serializers.Serializer):
     location = serializers.CharField(max_length=255)
     phone_number = serializers.CharField(max_length=20)
     skills = serializers.CharField()
+
+class EmployeeProfile(serializers.Serializer):
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    avatar_img = serializers.ImageField()
+
+class RecruiterProfile(serializers.Serializer):
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    avatar_img = serializers.ImageField()
+    company_name = serializers.CharField()
+    address = serializers.CharField()
