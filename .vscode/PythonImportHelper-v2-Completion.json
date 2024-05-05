@@ -395,6 +395,14 @@
         "documentation": {}
     },
     {
+        "label": "get_object_or_404",
+        "importPath": "django.shortcuts",
+        "description": "django.shortcuts",
+        "isExtraImport": true,
+        "detail": "django.shortcuts",
+        "documentation": {}
+    },
+    {
         "label": "Response",
         "importPath": "rest_framework.response",
         "description": "rest_framework.response",
@@ -445,6 +453,14 @@
     },
     {
         "label": "IsEmployeePermission",
+        "importPath": "accounts.permissions",
+        "description": "accounts.permissions",
+        "isExtraImport": true,
+        "detail": "accounts.permissions",
+        "documentation": {}
+    },
+    {
+        "label": "IsRecruiterPermission",
         "importPath": "accounts.permissions",
         "description": "accounts.permissions",
         "isExtraImport": true,
@@ -753,16 +769,16 @@
         "kind": 6,
         "importPath": "accounts.permissions",
         "description": "accounts.permissions",
-        "peekOfCode": "class IsEmployeePermission(BasePermission):\n    def has_permission(self, request, view):\n        try:\n            if request.user.role == 1:\n                return True\n            return False\n        except Exception:\n            print(str(Exception))\n            return False\nclass IsRecruiterermission(BasePermission):",
+        "peekOfCode": "class IsEmployeePermission(BasePermission):\n    def has_permission(self, request, view):\n        try:\n            if request.user.role == 1:\n                return True\n            return False\n        except Exception:\n            print(str(Exception))\n            return False\nclass IsRecruiterPermission(BasePermission):",
         "detail": "accounts.permissions",
         "documentation": {}
     },
     {
-        "label": "IsRecruiterermission",
+        "label": "IsRecruiterPermission",
         "kind": 6,
         "importPath": "accounts.permissions",
         "description": "accounts.permissions",
-        "peekOfCode": "class IsRecruiterermission(BasePermission):\n    def has_permission(self, request, view):\n        try:\n            if request.user.role == 2:\n                return True\n            return False\n        except Exception:\n            print(str(Exception))\n            return False",
+        "peekOfCode": "class IsRecruiterPermission(BasePermission):\n    def has_permission(self, request, view):\n        try:\n            if request.user.role == 2:\n                return True\n            return False\n        except Exception:\n            print(str(Exception))\n            return False",
         "detail": "accounts.permissions",
         "documentation": {}
     },
@@ -888,7 +904,7 @@
         "kind": 5,
         "importPath": "accounts.urls",
         "description": "accounts.urls",
-        "peekOfCode": "urlpatterns = [\n    path('api/token/', csrf_exempt(MyTokenObtainPairView.as_view()), name='token_obtain_pair'),\n    path('api/token/refresh/', csrf_exempt(MyTokenRefreshView.as_view()), name='token_refresh'),\n    path('employee/login/', csrf_exempt(LoginView.as_view()), name='login'),\n    path('employee/verify-email/', VerifyEmail.as_view(), name='verify-email'),\n    path('employee/pdf-upload/', UploadPDFView.as_view(), name='pdf_upload'),\n    path('employee/verify-cv/', ExtractCVCreateView.as_view(), name='verify-job'),\n    path('employee/find-job/', ExtractCVView.as_view(), name='extract_cv'),\n]\nurlpatterns += router.urls",
+        "peekOfCode": "urlpatterns = [\n    path('api/token/', csrf_exempt(MyTokenObtainPairView.as_view()), name='token_obtain_pair'),\n    path('api/token/refresh/', csrf_exempt(MyTokenRefreshView.as_view()), name='token_refresh'),\n    path('employee/login/', csrf_exempt(LoginView.as_view()), name='login'),\n    path('employee/verify-email/', VerifyEmail.as_view(), name='verify-email'),\n    path('employee/pdf-upload/', UploadPDFView.as_view(), name='pdf_upload'),\n    path('employee/verify-cv/', ExtractCVCreateView.as_view(), name='verify-job'),\n    path('employee/find-job/', ExtractCVView.as_view(), name='extract_cv'),\n    path('user/get-information/', GetInformation.as_view(), name='get-infomation'),\n]",
         "detail": "accounts.urls",
         "documentation": {}
     },
@@ -1028,6 +1044,15 @@
         "documentation": {}
     },
     {
+        "label": "GetInformation",
+        "kind": 6,
+        "importPath": "accounts.views",
+        "description": "accounts.views",
+        "peekOfCode": "class GetInformation(generics.GenericAPIView):\n    serializer_class_map = {\n        'GET': {\n            'employee': EmployeeSerializer,\n            'recruiter': RecruiterSerializer,\n        }\n    }\n    queryset_map = {\n        'employee': Employee.objects.all(),\n        'recruiter': Recruiter.objects.all(),",
+        "detail": "accounts.views",
+        "documentation": {}
+    },
+    {
         "label": "application",
         "kind": 5,
         "importPath": "core.asgi",
@@ -1158,7 +1183,7 @@
         "kind": 5,
         "importPath": "core.settings",
         "description": "core.settings",
-        "peekOfCode": "LANGUAGE_CODE = 'en-us'\nTIME_ZONE = 'UTC'\nUSE_I18N = True\nUSE_TZ = True\n# Static files (CSS, JavaScript, Images)\n# https://docs.djangoproject.com/en/4.2/howto/static-files/\nSTATIC_URL = 'static/'\n# Default primary key field type\n# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field\nDEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'",
+        "peekOfCode": "LANGUAGE_CODE = 'en-us'\nTIME_ZONE = 'UTC'\nUSE_I18N = True\nUSE_TZ = True\n# Static files (CSS, JavaScript, Images)\n# https://docs.djangoproject.com/en/4.2/howto/static-files/\nSTATIC_URL = 'static/'\nSTATICFILE_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'\nSTATIC_ROOT = BASE_DIR / 'staticfiles'\n# Default primary key field type",
         "detail": "core.settings",
         "documentation": {}
     },
@@ -1167,7 +1192,7 @@
         "kind": 5,
         "importPath": "core.settings",
         "description": "core.settings",
-        "peekOfCode": "TIME_ZONE = 'UTC'\nUSE_I18N = True\nUSE_TZ = True\n# Static files (CSS, JavaScript, Images)\n# https://docs.djangoproject.com/en/4.2/howto/static-files/\nSTATIC_URL = 'static/'\n# Default primary key field type\n# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field\nDEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'\nCORS_ORIGIN_ALLOW_ALL = True",
+        "peekOfCode": "TIME_ZONE = 'UTC'\nUSE_I18N = True\nUSE_TZ = True\n# Static files (CSS, JavaScript, Images)\n# https://docs.djangoproject.com/en/4.2/howto/static-files/\nSTATIC_URL = 'static/'\nSTATICFILE_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'\nSTATIC_ROOT = BASE_DIR / 'staticfiles'\n# Default primary key field type\n# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field",
         "detail": "core.settings",
         "documentation": {}
     },
@@ -1176,7 +1201,7 @@
         "kind": 5,
         "importPath": "core.settings",
         "description": "core.settings",
-        "peekOfCode": "USE_I18N = True\nUSE_TZ = True\n# Static files (CSS, JavaScript, Images)\n# https://docs.djangoproject.com/en/4.2/howto/static-files/\nSTATIC_URL = 'static/'\n# Default primary key field type\n# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field\nDEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'\nCORS_ORIGIN_ALLOW_ALL = True\nEMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'",
+        "peekOfCode": "USE_I18N = True\nUSE_TZ = True\n# Static files (CSS, JavaScript, Images)\n# https://docs.djangoproject.com/en/4.2/howto/static-files/\nSTATIC_URL = 'static/'\nSTATICFILE_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'\nSTATIC_ROOT = BASE_DIR / 'staticfiles'\n# Default primary key field type\n# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field\nDEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'",
         "detail": "core.settings",
         "documentation": {}
     },
@@ -1185,7 +1210,7 @@
         "kind": 5,
         "importPath": "core.settings",
         "description": "core.settings",
-        "peekOfCode": "USE_TZ = True\n# Static files (CSS, JavaScript, Images)\n# https://docs.djangoproject.com/en/4.2/howto/static-files/\nSTATIC_URL = 'static/'\n# Default primary key field type\n# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field\nDEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'\nCORS_ORIGIN_ALLOW_ALL = True\nEMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'\nEMAIL_HOST = \"smtp.gmail.com\"",
+        "peekOfCode": "USE_TZ = True\n# Static files (CSS, JavaScript, Images)\n# https://docs.djangoproject.com/en/4.2/howto/static-files/\nSTATIC_URL = 'static/'\nSTATICFILE_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'\nSTATIC_ROOT = BASE_DIR / 'staticfiles'\n# Default primary key field type\n# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field\nDEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'\nCORS_ORIGIN_ALLOW_ALL = True",
         "detail": "core.settings",
         "documentation": {}
     },
@@ -1194,7 +1219,25 @@
         "kind": 5,
         "importPath": "core.settings",
         "description": "core.settings",
-        "peekOfCode": "STATIC_URL = 'static/'\n# Default primary key field type\n# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field\nDEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'\nCORS_ORIGIN_ALLOW_ALL = True\nEMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'\nEMAIL_HOST = \"smtp.gmail.com\"\nEMAIL_HOST_USER = 'hire.itf@gmail.com'\nEMAIL_HOST_PASSWORD = 'qussgisnacisefvq'\nEMAIL_PORT = 587",
+        "peekOfCode": "STATIC_URL = 'static/'\nSTATICFILE_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'\nSTATIC_ROOT = BASE_DIR / 'staticfiles'\n# Default primary key field type\n# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field\nDEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'\nCORS_ORIGIN_ALLOW_ALL = True\nEMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'\nEMAIL_HOST = \"smtp.gmail.com\"\nEMAIL_HOST_USER = 'hire.itf@gmail.com'",
+        "detail": "core.settings",
+        "documentation": {}
+    },
+    {
+        "label": "STATICFILE_STORAGE",
+        "kind": 5,
+        "importPath": "core.settings",
+        "description": "core.settings",
+        "peekOfCode": "STATICFILE_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'\nSTATIC_ROOT = BASE_DIR / 'staticfiles'\n# Default primary key field type\n# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field\nDEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'\nCORS_ORIGIN_ALLOW_ALL = True\nEMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'\nEMAIL_HOST = \"smtp.gmail.com\"\nEMAIL_HOST_USER = 'hire.itf@gmail.com'\nEMAIL_HOST_PASSWORD = 'qussgisnacisefvq'",
+        "detail": "core.settings",
+        "documentation": {}
+    },
+    {
+        "label": "STATIC_ROOT",
+        "kind": 5,
+        "importPath": "core.settings",
+        "description": "core.settings",
+        "peekOfCode": "STATIC_ROOT = BASE_DIR / 'staticfiles'\n# Default primary key field type\n# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field\nDEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'\nCORS_ORIGIN_ALLOW_ALL = True\nEMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'\nEMAIL_HOST = \"smtp.gmail.com\"\nEMAIL_HOST_USER = 'hire.itf@gmail.com'\nEMAIL_HOST_PASSWORD = 'qussgisnacisefvq'\nEMAIL_PORT = 587",
         "detail": "core.settings",
         "documentation": {}
     },

@@ -80,3 +80,4 @@ urllib3==1.26.14
 uuid==1.30
 virtualenv==20.22.0
 wasabi==1.1.1
+whitenoise==6.0.0
