@@ -21,6 +21,8 @@ urlpatterns = [
     path('user/get-information/', GetInformation.as_view(), name='get-infomation'),
     path('user/upload-employee-profile/', UpdateEmployeeProfile.as_view(), name='upload_profile'),
     path('user/upload-recruiter-profile/', UpdateRecruiterProfile.as_view(), name='upload_profile'),
+    path('employee/get-active/', GetActiveCVView.as_view(), name='get_active_cv'),
+    path('employee/get-all-jobs/', JobRequirementListAPIView.as_view(), name='get_all_jobs'),
 ]
 
 urlpatterns += router.urls

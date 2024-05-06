@@ -9,8 +9,8 @@ import cloudinary.uploader
 from accounts.emails import send_email_with_template
 from accounts.permissions import IsEmployeePermission, IsRecruiterPermission
 from accounts.utils import extract_location, extract_phone_number, extract_skills, extract_text_from_pdf
-from .serializers import  EmployeeProfile, EmployeeSerializer, ExtractCVCreateSerializer, LoginSerializer, MyTokenObtainPairSerializer, PDFFileSerializer, RecruiterProfile, RecruiterRegisterSerializer, RecruiterSerializer, UserRegisterSerializer, VertifyEmailSerializer
-from .models import Employee, ExtractCV, Recruiter, User
+from .serializers import  EmployeeProfile, EmployeeSerializer, ExtractCVCreateSerializer, JobRequirementGetAll, LoginSerializer, MyTokenObtainPairSerializer, PDFFileSerializer, RecruiterProfile, RecruiterRegisterSerializer, RecruiterSerializer, UserRegisterSerializer, VertifyEmailSerializer
+from .models import Employee, ExtractCV, JobRequirement, Recruiter, User
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
 from drf_yasg.utils import swagger_auto_schema
@@ -607,3 +607,78 @@ class UpdateRecruiterProfile(generics.GenericAPIView):
                 "data": {},
             }
             return Response(response, status=status.HTTP_400_BAD_REQUEST)  
+        
+class GetActiveCVView(GenericAPIView):
+    permission_classes = [IsEmployeePermission, IsAuthenticated]
+    serializer_class = EmployeeSerializer
+
+    def get(self, request, *args, **kwargs):
+        try:
+            user_id = request.user.id
+            employee = Employee.objects.get(account_id=user_id)
+
+            try:
+                extract_cv = ExtractCV.objects.get(employee=employee)
+                response = {
+                    "status": status.HTTP_200_OK,
+                    "message": "Success",
+                    "data": extract_cv.active,
+                }
+            except ExtractCV.DoesNotExist:
+                response = {
+                    "status": status.HTTP_200_OK,
+                    "message": "Success",
+                    "data": False,
+                }
+            
+            return Response(response, status=status.HTTP_200_OK)
+        
+        except Employee.DoesNotExist:
+            response = {
+                "status": status.HTTP_401_UNAUTHORIZED,
+                "message": "Employee not found",
+                "data": {},
+            }
+        
+        except Exception as e:
+            print(e)
+            response = {
+                "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
+                "message": "Internal Server Error",
+                "data": {},
+            }
+        
+        return Response(response, status=response["status"])
+    
+class JobRequirementListAPIView(APIView):
+    permission_classes = [IsEmployeePermission, IsAuthenticated]
+    def get(self, request, format=None):
+        try: 
+            user_id = request.user.id
+            cv = ExtractCV.objects.get(employee__account_id=user_id)
+            cv_skill = cv.skills
+            job_requirements = JobRequirement.objects.filter(active=True)
+            list_overlap = []
+            for job_requirement in job_requirements:
+                job_skills = job_requirement.skills
+                common_skills =  set(cv_skill.split(", ")).intersection(set(job_skills.split(", ")))
+                overlap_percentage = (len(common_skills) / len(set(cv_skill.split(", ")))) * 100
+                list_overlap.append(overlap_percentage)
+            combined_data = zip(job_requirements, list_overlap)
+            sorted_data = sorted(combined_data, key=lambda x: x[1], reverse=True)
+            sorted_job_requirements, sorted_list_overlap = zip(*sorted_data)
+            serializer = JobRequirementGetAll(sorted_job_requirements, many=True)
+            response = {
+                "status": status.HTTP_200_OK,
+                "message": "Get all jobs successfully",
+                "data": serializer.data,
+            }
+            return Response(response, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            response = {
+                "status": status.HTTP_401_UNAUTHORIZED,
+                "message": "Get all jobs failed",
+                "data": {},
+            } 
+            return Response(response, status=status.HTTP_401_UNAUTHORIZED)
