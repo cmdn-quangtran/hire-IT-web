@@ -556,6 +556,14 @@
         "documentation": {}
     },
     {
+        "label": "Image",
+        "importPath": "PIL",
+        "description": "PIL",
+        "isExtraImport": true,
+        "detail": "PIL",
+        "documentation": {}
+    },
+    {
         "label": "get_asgi_application",
         "importPath": "django.core.asgi",
         "description": "django.core.asgi",
@@ -733,7 +741,7 @@
         "kind": 6,
         "importPath": "accounts.models",
         "description": "accounts.models",
-        "peekOfCode": "class Employee(models.Model):\n    account = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)\n    avatar_url = models.CharField(null=True, max_length=1000, blank=True,\n                                  default='https://res.cloudinary.com/dq6avgw6n/image/upload/v1683965956/2_lrrhqr.jpg')\n    pdf_file = models.CharField(null=True, max_length=1000, blank=True, default=None)\n    class Meta:\n        db_table = 'Employee'\n    def __str__(self):\n        return self.account.first_name + ' ' + self.account.last_name\nclass Recruiter(models.Model):",
+        "peekOfCode": "class Employee(models.Model):\n    account = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)\n    avatar_url = models.CharField(null=True, max_length=1000, blank=True,\n                                  default='https://res.cloudinary.com/dzqfmaj6i/image/upload/v1712999567/hireIT/default/user_default_hx8abj.jpg')\n    pdf_file = models.CharField(null=True, max_length=1000, blank=True, default=None)\n    class Meta:\n        db_table = 'Employee'\n    def __str__(self):\n        return self.account.first_name + ' ' + self.account.last_name\nclass Recruiter(models.Model):",
         "detail": "accounts.models",
         "documentation": {}
     },
@@ -742,7 +750,7 @@
         "kind": 6,
         "importPath": "accounts.models",
         "description": "accounts.models",
-        "peekOfCode": "class Recruiter(models.Model):\n    account = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)\n    company_name = models.CharField(null=True, blank=True, max_length=500)\n    address = models.CharField(null=True, blank=True, max_length=500)\n    avatar_url = models.CharField(null=True, max_length=1000, blank=True,\n                                  default='https://e7.pngegg.com/pngimages/643/98/png-clipart-computer-icons-avatar-mover-business-flat-design-corporate-elderly-care-microphone-heroes-thumbnail.png')\n    class Meta:\n        db_table = 'Recruiter'\n    def __str__(self):\n        return self.account.first_name + ' ' + self.account.last_name",
+        "peekOfCode": "class Recruiter(models.Model):\n    account = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)\n    company_name = models.CharField(null=True, blank=True, max_length=500)\n    address = models.CharField(null=True, blank=True, max_length=500)\n    avatar_url = models.CharField(null=True, max_length=1000, blank=True,\n                                  default='https://res.cloudinary.com/dzqfmaj6i/image/upload/v1712999567/hireIT/default/user_default_hx8abj.jpg')\n    class Meta:\n        db_table = 'Recruiter'\n    def __str__(self):\n        return self.account.first_name + ' ' + self.account.last_name",
         "detail": "accounts.models",
         "documentation": {}
     },
@@ -877,7 +885,43 @@
         "kind": 6,
         "importPath": "accounts.serializers",
         "description": "accounts.serializers",
-        "peekOfCode": "class ExtractCVCreateSerializer(serializers.Serializer):\n    location = serializers.CharField(max_length=255)\n    phone_number = serializers.CharField(max_length=20)\n    skills = serializers.CharField()",
+        "peekOfCode": "class ExtractCVCreateSerializer(serializers.Serializer):\n    location = serializers.CharField(max_length=255)\n    phone_number = serializers.CharField(max_length=20)\n    skills = serializers.CharField()\nclass EmployeeProfile(serializers.Serializer):\n    first_name = serializers.CharField()\n    last_name = serializers.CharField()\n    avatar_img = serializers.ImageField()\nclass RecruiterProfile(serializers.Serializer):\n    first_name = serializers.CharField()",
+        "detail": "accounts.serializers",
+        "documentation": {}
+    },
+    {
+        "label": "EmployeeProfile",
+        "kind": 6,
+        "importPath": "accounts.serializers",
+        "description": "accounts.serializers",
+        "peekOfCode": "class EmployeeProfile(serializers.Serializer):\n    first_name = serializers.CharField()\n    last_name = serializers.CharField()\n    avatar_img = serializers.ImageField()\nclass RecruiterProfile(serializers.Serializer):\n    first_name = serializers.CharField()\n    last_name = serializers.CharField()\n    avatar_img = serializers.ImageField()\n    company_name = serializers.CharField()\n    address = serializers.CharField()",
+        "detail": "accounts.serializers",
+        "documentation": {}
+    },
+    {
+        "label": "RecruiterProfile",
+        "kind": 6,
+        "importPath": "accounts.serializers",
+        "description": "accounts.serializers",
+        "peekOfCode": "class RecruiterProfile(serializers.Serializer):\n    first_name = serializers.CharField()\n    last_name = serializers.CharField()\n    avatar_img = serializers.ImageField()\n    company_name = serializers.CharField()\n    address = serializers.CharField()\nclass JobRequirementSerializer(serializers.Serializer):\n    pdf_file = serializers.FileField(validators=[FileExtensionValidator(['pdf'])])\n    class Meta:\n        model = JobRequirement",
+        "detail": "accounts.serializers",
+        "documentation": {}
+    },
+    {
+        "label": "JobRequirementSerializer",
+        "kind": 6,
+        "importPath": "accounts.serializers",
+        "description": "accounts.serializers",
+        "peekOfCode": "class JobRequirementSerializer(serializers.Serializer):\n    pdf_file = serializers.FileField(validators=[FileExtensionValidator(['pdf'])])\n    class Meta:\n        model = JobRequirement\n        fields = ('job_name', 'location')\nclass JobRequirementGetAll(serializers.ModelSerializer):\n    recruiter = serializers.SerializerMethodField()\n    class Meta:\n        model = JobRequirement\n        fields = '__all__'",
+        "detail": "accounts.serializers",
+        "documentation": {}
+    },
+    {
+        "label": "JobRequirementGetAll",
+        "kind": 6,
+        "importPath": "accounts.serializers",
+        "description": "accounts.serializers",
+        "peekOfCode": "class JobRequirementGetAll(serializers.ModelSerializer):\n    recruiter = serializers.SerializerMethodField()\n    class Meta:\n        model = JobRequirement\n        fields = '__all__'\n    def get_recruiter(self, obj):\n        return RecruiterSerializer(obj.recruiter).data",
         "detail": "accounts.serializers",
         "documentation": {}
     },
@@ -904,7 +948,7 @@
         "kind": 5,
         "importPath": "accounts.urls",
         "description": "accounts.urls",
-        "peekOfCode": "urlpatterns = [\n    path('api/token/', csrf_exempt(MyTokenObtainPairView.as_view()), name='token_obtain_pair'),\n    path('api/token/refresh/', csrf_exempt(MyTokenRefreshView.as_view()), name='token_refresh'),\n    path('employee/login/', csrf_exempt(LoginView.as_view()), name='login'),\n    path('employee/verify-email/', VerifyEmail.as_view(), name='verify-email'),\n    path('employee/pdf-upload/', UploadPDFView.as_view(), name='pdf_upload'),\n    path('employee/verify-cv/', ExtractCVCreateView.as_view(), name='verify-job'),\n    path('employee/find-job/', ExtractCVView.as_view(), name='extract_cv'),\n    path('user/get-information/', GetInformation.as_view(), name='get-infomation'),\n]",
+        "peekOfCode": "urlpatterns = [\n    path('api/token/', csrf_exempt(MyTokenObtainPairView.as_view()), name='token_obtain_pair'),\n    path('api/token/refresh/', csrf_exempt(MyTokenRefreshView.as_view()), name='token_refresh'),\n    path('employee/login/', csrf_exempt(LoginView.as_view()), name='login'),\n    path('employee/verify-email/', VerifyEmail.as_view(), name='verify-email'),\n    path('employee/pdf-upload/', UploadPDFView.as_view(), name='pdf_upload'),\n    path('employee/deactive/', DeactivePDFView.as_view(), name='deactive_pdf'),\n    path('employee/verify-cv/', ExtractCVCreateView.as_view(), name='verify-job'),\n    path('employee/find-job/', ExtractCVView.as_view(), name='extract_cv'),\n    path('user/get-information/', GetInformation.as_view(), name='get-infomation'),",
         "detail": "accounts.urls",
         "documentation": {}
     },
@@ -950,6 +994,33 @@
         "importPath": "accounts.utils",
         "description": "accounts.utils",
         "peekOfCode": "nlp = spacy.load(\"en_core_web_sm\")\ndef extract_skills(nlp_text):\n    data = pd.read_csv(os.path.join(os.path.dirname(__file__), 'skills.csv'))\n    SKILLS = list(data.columns.values)\n    doc = nlp(nlp_text)\n    skills = []\n    for token in doc:\n        if token.text.lower() in SKILLS:\n            skills.append(token.text)\n    for chunk in doc.noun_chunks:",
+        "detail": "accounts.utils",
+        "documentation": {}
+    },
+    {
+        "label": "PROVINCES_1",
+        "kind": 5,
+        "importPath": "accounts.utils",
+        "description": "accounts.utils",
+        "peekOfCode": "PROVINCES_1 = ['An Giang', 'Bà Rịa-Vũng Tàu', 'Bắc Giang', 'Bắc Kạn', 'Bạc Liêu', 'Bắc Ninh', 'Bến Tre', 'Bình Định', 'Bình Dương', 'Bình Phước', 'Bình Thuận', 'Cà Mau', 'Cần Thơ', 'Cao Bằng', 'Đà Nẵng', 'Đắk Lắk', 'Đắk Nông', 'Điện Biên', 'Đồng Nai', 'Đồng Tháp', 'Gia Lai', 'Hà Giang', 'Hà Nam', 'Hà Nội', 'Hà Tĩnh', 'Hải Dương', 'Hải Phòng', 'Hậu Giang', 'Hòa Bình', 'Hưng Yên', 'Khánh Hòa', 'Kiên Giang', 'Kon Tum', 'Lai Châu', 'Lâm Đồng', 'Lạng Sơn', 'Lào Cai', 'Long An', 'Nam Định', 'Nghệ An', 'Ninh Bình', 'Ninh Thuận', 'Phú Thọ', 'Phú Yên', 'Quảng Bình', 'Quảng Nam', 'Quảng Ngãi', 'Quảng Ninh', 'Quảng Trị', 'Sóc Trăng', 'Sơn La', 'Tây Ninh', 'Thái Bình', 'Thái Nguyên', 'Thanh Hóa', 'Thừa Thiên-Huế', \"Thừa Thiên Huế\", 'Tiền Giang', 'TP Hồ Chí Minh', 'Trà Vinh', 'Tuyên Quang', 'Vĩnh Long', 'Vĩnh Phúc', 'Yên Bái']\nPROVINCES_2 = [\n    \"An Giang\",\n    \"Ba Ria - Vung Tau\",\n    \"Bac Giang\",\n    \"Bac Kan\",\n    \"Bac Lieu\",\n    \"Bac Ninh\",\n    \"Ben Tre\",\n    \"Binh Dinh\",",
+        "detail": "accounts.utils",
+        "documentation": {}
+    },
+    {
+        "label": "PROVINCES_2",
+        "kind": 5,
+        "importPath": "accounts.utils",
+        "description": "accounts.utils",
+        "peekOfCode": "PROVINCES_2 = [\n    \"An Giang\",\n    \"Ba Ria - Vung Tau\",\n    \"Bac Giang\",\n    \"Bac Kan\",\n    \"Bac Lieu\",\n    \"Bac Ninh\",\n    \"Ben Tre\",\n    \"Binh Dinh\",\n    \"Binh Duong\",",
+        "detail": "accounts.utils",
+        "documentation": {}
+    },
+    {
+        "label": "PROVINCES",
+        "kind": 5,
+        "importPath": "accounts.utils",
+        "description": "accounts.utils",
+        "peekOfCode": "PROVINCES = PROVINCES_1 + PROVINCES_2",
         "detail": "accounts.utils",
         "documentation": {}
     },
@@ -1026,6 +1097,15 @@
         "documentation": {}
     },
     {
+        "label": "DeactivePDFView",
+        "kind": 6,
+        "importPath": "accounts.views",
+        "description": "accounts.views",
+        "peekOfCode": "class DeactivePDFView(APIView):\n    permission_classes = [IsEmployeePermission, IsAuthenticated]\n    def get(self, request):\n        try:\n            employee = Employee.objects.get(account_id=request.user.id)\n            extract_cv = ExtractCV.objects.get(employee=employee)\n            extract_cv.active = False\n            extract_cv.save()\n            response = {\n                    \"status\": status.HTTP_200_OK,",
+        "detail": "accounts.views",
+        "documentation": {}
+    },
+    {
         "label": "ExtractCVView",
         "kind": 6,
         "importPath": "accounts.views",
@@ -1049,6 +1129,69 @@
         "importPath": "accounts.views",
         "description": "accounts.views",
         "peekOfCode": "class GetInformation(generics.GenericAPIView):\n    serializer_class_map = {\n        'GET': {\n            'employee': EmployeeSerializer,\n            'recruiter': RecruiterSerializer,\n        }\n    }\n    queryset_map = {\n        'employee': Employee.objects.all(),\n        'recruiter': Recruiter.objects.all(),",
+        "detail": "accounts.views",
+        "documentation": {}
+    },
+    {
+        "label": "UpdateEmployeeProfile",
+        "kind": 6,
+        "importPath": "accounts.views",
+        "description": "accounts.views",
+        "peekOfCode": "class UpdateEmployeeProfile(generics.GenericAPIView):\n    queryset = Employee.objects.all()\n    permission_classes = [IsEmployeePermission, IsAuthenticated]\n    parser_classes = (MultiPartParser, FormParser)\n    @swagger_auto_schema(\n        request_body=EmployeeProfile,\n        operation_description=\"Update employee profile\",\n        responses={\n            204: \"{'message': 'Upload successfully'}\",\n            400: \"{'message': 'Upload Failed'}\",",
+        "detail": "accounts.views",
+        "documentation": {}
+    },
+    {
+        "label": "UpdateRecruiterProfile",
+        "kind": 6,
+        "importPath": "accounts.views",
+        "description": "accounts.views",
+        "peekOfCode": "class UpdateRecruiterProfile(generics.GenericAPIView):\n    queryset = Employee.objects.all()\n    permission_classes = [IsRecruiterPermission, IsAuthenticated]\n    parser_classes = (MultiPartParser, FormParser)\n    @swagger_auto_schema(\n        request_body=RecruiterProfile,\n        operation_description=\"Update recruiter profile\",\n        responses={\n            204: \"{'message': 'Upload sucessfully'}\",\n            401: \"{'message': 'Invalid file format'}\",",
+        "detail": "accounts.views",
+        "documentation": {}
+    },
+    {
+        "label": "GetActiveCVView",
+        "kind": 6,
+        "importPath": "accounts.views",
+        "description": "accounts.views",
+        "peekOfCode": "class GetActiveCVView(GenericAPIView):\n    permission_classes = [IsEmployeePermission, IsAuthenticated]\n    serializer_class = EmployeeSerializer\n    def get(self, request, *args, **kwargs):\n        try:\n            user_id = request.user.id\n            employee = Employee.objects.get(account_id=user_id)\n            try:\n                extract_cv = ExtractCV.objects.get(employee=employee)\n                response = {",
+        "detail": "accounts.views",
+        "documentation": {}
+    },
+    {
+        "label": "JobRequirementListAPIView",
+        "kind": 6,
+        "importPath": "accounts.views",
+        "description": "accounts.views",
+        "peekOfCode": "class JobRequirementListAPIView(APIView):\n    permission_classes = [IsEmployeePermission, IsAuthenticated]\n    def get(self, request, format=None):\n        try: \n            user_id = request.user.id\n            cv = ExtractCV.objects.get(employee__account_id=user_id)\n            cv_skill = cv.skills\n            job_requirements = JobRequirement.objects.filter(active=True)\n            list_overlap = []\n            for job_requirement in job_requirements:",
+        "detail": "accounts.views",
+        "documentation": {}
+    },
+    {
+        "label": "UploadJobView",
+        "kind": 6,
+        "importPath": "accounts.views",
+        "description": "accounts.views",
+        "peekOfCode": "class UploadJobView(generics.GenericAPIView):\n    serializer_class = JobRequirementSerializer\n    permission_classes = [IsRecruiterPermission, IsAuthenticated]\n    @swagger_auto_schema(\n        request_body=JobRequirementSerializer,\n        operation_description=\"Create a job requirement\",\n        responses={\n            201: JobRequirementSerializer,\n            400: \"{'error': 'Bad request'}\",\n            401: \"{'error': 'Unauthorized'}\",",
+        "detail": "accounts.views",
+        "documentation": {}
+    },
+    {
+        "label": "GetAllCandidateListAPIView",
+        "kind": 6,
+        "importPath": "accounts.views",
+        "description": "accounts.views",
+        "peekOfCode": "class GetAllCandidateListAPIView(APIView):\n    permission_classes = [IsRecruiterPermission, IsAuthenticated]\n    def get(self, request, format=None):\n        try: \n            user_id = request.user.id\n            all_jobs_active = JobRequirement.objects.filter(recruiter__account_id=user_id, active=True)\n            all_candidates = ExtractCV.objects.filter(active=True)\n            skills_of_company = []\n            list_overlap = []\n            for job in all_jobs_active:",
+        "detail": "accounts.views",
+        "documentation": {}
+    },
+    {
+        "label": "JobOwnerView",
+        "kind": 6,
+        "importPath": "accounts.views",
+        "description": "accounts.views",
+        "peekOfCode": "class JobOwnerView(GenericAPIView):\n    permission_classes = [IsRecruiterPermission, IsAuthenticated]\n    serializer_class = JobRequirementGetAll\n    def get(self, request, *args, **kwargs):\n        try:\n            user_id = request.user.id\n            recruiter = Recruiter.objects.get(account_id=user_id)\n            job_requirements = JobRequirement.objects.filter(recruiter=recruiter)\n            serializer = self.get_serializer(job_requirements, many=True)\n            response_data = serializer.data",
         "detail": "accounts.views",
         "documentation": {}
     },

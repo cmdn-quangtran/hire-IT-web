@@ -9,7 +9,7 @@ import cloudinary.uploader
 from accounts.emails import send_email_with_template
 from accounts.permissions import IsEmployeePermission, IsRecruiterPermission
 from accounts.utils import extract_location, extract_phone_number, extract_skills, extract_text_from_pdf
-from .serializers import  EmployeeProfile, EmployeeSerializer, ExtractCVCreateSerializer, JobRequirementGetAll, LoginSerializer, MyTokenObtainPairSerializer, PDFFileSerializer, RecruiterProfile, RecruiterRegisterSerializer, RecruiterSerializer, UserRegisterSerializer, VertifyEmailSerializer
+from .serializers import  EmployeeProfile, EmployeeSerializer, ExtractCVCreateSerializer, ExtractCVGetAll, JobRequirementGetAll, JobRequirementSerializer, LoginSerializer, MyTokenObtainPairSerializer, PDFFileSerializer, RecruiterProfile, RecruiterRegisterSerializer, RecruiterSerializer, UserRegisterSerializer, VertifyEmailSerializer
 from .models import Employee, ExtractCV, JobRequirement, Recruiter, User
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -682,3 +682,158 @@ class JobRequirementListAPIView(APIView):
                 "data": {},
             } 
             return Response(response, status=status.HTTP_401_UNAUTHORIZED)
+
+class UploadJobView(generics.GenericAPIView):
+    serializer_class = JobRequirementSerializer
+    permission_classes = [IsRecruiterPermission, IsAuthenticated]
+    @swagger_auto_schema(
+        request_body=JobRequirementSerializer,
+        operation_description="Create a job requirement",
+        responses={
+            201: JobRequirementSerializer,
+            400: "{'error': 'Bad request'}",
+            401: "{'error': 'Unauthorized'}",
+        },
+    )
+    def post(self, request, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(data=request.data)
+            if serializer.is_valid():
+                location = request.data['location']
+                job_name = request.data['job_name']
+                print('location:--------------------------',location, job_name)
+                if 'pdf_file' not in request.FILES:
+                    response = {
+                        "status": status.HTTP_400_BAD_REQUEST,
+                        "message": "No PDF file uploaded",
+                        "data": {},
+                    }
+                    return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                pdf_file = request.FILES['pdf_file']
+
+                if pdf_file.name == '':
+                    response = {
+                        "status": status.HTTP_400_BAD_REQUEST,
+                        "message": "Empty filename",
+                        "data": {},
+                    }
+                    return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                
+                if not pdf_file.name.endswith('.pdf'):
+                    response = {
+                        "status": status.HTTP_400_BAD_REQUEST,
+                        "message": "Invalid file format",
+                        "data": {},
+                    }
+                    return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                
+                user_id = request.user.id
+                recruiter = Recruiter.objects.get(account_id = user_id)
+                uploaded_file = cloudinary.uploader.upload(pdf_file, access_mode="public")
+                text = extract_text_from_pdf(uploaded_file['secure_url'])
+                skills = extract_skills(text)
+                job_req = JobRequirement.objects.create(
+                        recruiter=recruiter,
+                        job_name=job_name,
+                        location=location,
+                        skills=skills,
+                        active=True,
+                        pdf_upload=uploaded_file['secure_url']
+                    )
+                job_req.save()
+                response = {
+                    "status": status.HTTP_201_CREATED,
+                    "message": "Create job successfully",
+                    "data": serializer.data,
+                }
+                return Response(response, status=status.HTTP_201_CREATED)
+            else:
+                response = {
+                    "status": status.HTTP_400_BAD_REQUEST,
+                    "message": "Create job failed",
+                    "data": serializer.errors,
+                }
+                return Response(response, status= status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print(e)
+            response = {
+                "status": status.HTTP_401_UNAUTHORIZED,
+                "message": "Create job Failed",
+                "data": {},
+            } 
+        return Response(response, status=status.HTTP_401_UNAUTHORIZED)
+    
+class GetAllCandidateListAPIView(APIView):
+    permission_classes = [IsRecruiterPermission, IsAuthenticated]
+    def get(self, request, format=None):
+        try: 
+            user_id = request.user.id
+            all_jobs_active = JobRequirement.objects.filter(recruiter__account_id=user_id, active=True)
+            all_candidates = ExtractCV.objects.filter(active=True)
+            skills_of_company = []
+            list_overlap = []
+            for job in all_jobs_active:
+                skills_of_company+=(job.skills.split(", "))
+            
+            for candidate in all_candidates:
+                candidate_skills = candidate.skills
+                common_skills =  set(candidate_skills.split(", ")).intersection(set(skills_of_company))
+                overlap_percentage = (len(common_skills) / len(set(skills_of_company))) * 100
+                list_overlap.append(overlap_percentage)
+
+            combined_data = zip(all_candidates, list_overlap)
+            sorted_data = sorted(combined_data, key=lambda x: x[1], reverse=True)
+            sorted_all_candidates, sorted_list_overlap = zip(*sorted_data)
+            serializer = ExtractCVGetAll(sorted_all_candidates, many=True)
+            response = {
+                "status": status.HTTP_200_OK,
+                "message": "Get all candidates successfully",
+                "data": serializer.data,
+            }
+            return Response(response, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            response = {
+                "status": status.HTTP_401_UNAUTHORIZED,
+                "message": "Get all candidates failed",
+                "data": {},
+            } 
+            return Response(response, status=status.HTTP_401_UNAUTHORIZED)
+        
+class JobOwnerView(GenericAPIView):
+    permission_classes = [IsRecruiterPermission, IsAuthenticated]
+    serializer_class = JobRequirementGetAll
+
+    def get(self, request, *args, **kwargs):
+        try:
+            user_id = request.user.id
+            recruiter = Recruiter.objects.get(account_id=user_id)
+            job_requirements = JobRequirement.objects.filter(recruiter=recruiter)
+            
+            serializer = self.get_serializer(job_requirements, many=True)
+            response_data = serializer.data
+            response = {
+                "status": status.HTTP_200_OK,
+                "message": "Success",
+                "data": response_data,
+            }
+            
+            return Response(response, status=status.HTTP_200_OK)
+        
+        except Recruiter.DoesNotExist:
+            response = {
+                "status": status.HTTP_401_UNAUTHORIZED,
+                "message": "Recruiter not found",
+                "data": [],
+            }
+        
+        except Exception as e:
+            print(e)
+            response = {
+                "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
+                "message": "Internal Server Error",
+                "data": [],
+            }
+        
+        return Response(response, status=response["status"])
+

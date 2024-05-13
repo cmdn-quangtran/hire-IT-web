@@ -23,6 +23,11 @@ urlpatterns = [
     path('user/upload-recruiter-profile/', UpdateRecruiterProfile.as_view(), name='upload_profile'),
     path('employee/get-active/', GetActiveCVView.as_view(), name='get_active_cv'),
     path('employee/get-all-jobs/', JobRequirementListAPIView.as_view(), name='get_all_jobs'),
+
+
+    path('recruiter/get-all-candidates/', GetAllCandidateListAPIView.as_view(), name='get_all_candidates'),
+    path('recruiter/get-all-jobs-owner/', JobOwnerView.as_view(), name='get_all_candidates'),
+    path('recruiter/upload-job/', UploadJobView.as_view(), name='upload_and_extract_cv'),
 ]
 
 urlpatterns += router.urls
