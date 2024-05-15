@@ -6,10 +6,10 @@ from rest_framework.decorators import action
 from django.conf import settings
 from rest_framework.parsers import MultiPartParser, FormParser
 import cloudinary.uploader
-from accounts.emails import send_email_with_template
+from accounts.emails import send_email_with_job, send_email_with_template, send_email_with_cv
 from accounts.permissions import IsEmployeePermission, IsRecruiterPermission
 from accounts.utils import extract_location, extract_phone_number, extract_skills, extract_text_from_pdf
-from .serializers import  EmployeeProfile, EmployeeSerializer, ExtractCVCreateSerializer, ExtractCVGetAll, JobRequirementGetAll, JobRequirementSerializer, LoginSerializer, MyTokenObtainPairSerializer, PDFFileSerializer, RecruiterProfile, RecruiterRegisterSerializer, RecruiterSerializer, UserRegisterSerializer, VertifyEmailSerializer
+from .serializers import  DeactivedJobSerializer, EmailCVSerializer, EmailJobSerializer, EmployeeProfile, EmployeeSerializer, ExtractCVCreateSerializer, ExtractCVGetAll, JobRequirementGetAll, JobRequirementSerializer, LoginSerializer, MyTokenObtainPairSerializer, PDFFileSerializer, RecruiterProfile, RecruiterRegisterSerializer, RecruiterSerializer, UserRegisterSerializer, VertifyEmailSerializer
 from .models import Employee, ExtractCV, JobRequirement, Recruiter, User
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -837,3 +837,146 @@ class JobOwnerView(GenericAPIView):
         
         return Response(response, status=response["status"])
 
+
+class EmailCVView(APIView):
+    permission_classes = [IsEmployeePermission, IsAuthenticated]
+    serializer_class = EmailCVSerializer
+    @swagger_auto_schema(
+        request_body=EmailCVSerializer,
+        operation_description="Send email with CV",
+        responses={
+            200: "Email sent successfully",
+            401: "Unauthorized",
+        }
+    )
+    def post(self, request):
+        serializer = EmailCVSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            job_name = serializer.validated_data['job_name']
+            company_name = serializer.validated_data['company_name']
+            pdf_file = serializer.validated_data['pdf_file']
+            name = serializer.validated_data['name']
+            email_user = serializer.validated_data['email_user']
+            try:
+                send_email_with_cv(email, job_name, company_name, pdf_file, name, email_user)
+                response = {
+                    "status": status.HTTP_200_OK,
+                    "message": "Email sent successfully.",
+                    "data": {},
+                }
+                return Response(response, status=status.HTTP_200_OK)
+            except Exception as e:
+                print(e)
+                response = {
+                    "status": status.HTTP_401_UNAUTHORIZED,
+                    "message": "Email sent failed",
+                    "data": {},
+                } 
+                return Response(response, status=status.HTTP_401_UNAUTHORIZED)
+        response = {
+            "status": status.HTTP_401_UNAUTHORIZED,
+            "message": "Email sent failed",
+            "data": {},
+        } 
+        return Response(response, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class EmailJobView(APIView):
+    permission_classes = [IsRecruiterPermission, IsAuthenticated]
+    serializer_class = EmailJobSerializer
+
+    @swagger_auto_schema(
+        request_body=EmailJobSerializer,
+        operation_description="Send email with Job",
+        responses={
+            200: "Email sent successfully",
+            401: "Unauthorized",
+        }
+    )
+    def post(self, request):
+        serializer = EmailJobSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            name_candidate = serializer.validated_data['name_candidate']
+            job_name = serializer.validated_data['job_name']
+            pdf_upload = serializer.validated_data['pdf_upload']
+            company_name = serializer.validated_data['company_name']
+            name = serializer.validated_data['name']
+            email_user = serializer.validated_data['email_user']
+            try:
+                send_email_with_job(email, name_candidate, job_name, pdf_upload, company_name, name, email_user)
+                response = {
+                    "status": status.HTTP_200_OK,
+                    "message": "Email sent successfully.",
+                    "data": {},
+                }
+                return Response(response, status=status.HTTP_200_OK)
+            except Exception as e:
+                print(e)
+                response = {
+                    "status": status.HTTP_401_UNAUTHORIZED,
+                    "message": "Email sent failed",
+                    "data": {},
+                }
+                return Response(response, status=status.HTTP_401_UNAUTHORIZED)
+        response = {
+            "status": status.HTTP_401_UNAUTHORIZED,
+            "message": "Email sent failed",
+            "data": {},
+        }
+        return Response(response, status=status.HTTP_401_UNAUTHORIZED)
+    
+class DeleteJobView(viewsets.ModelViewSet):
+    permission_classes = [IsRecruiterPermission, IsAuthenticated]
+    queryset = JobRequirement.objects.all()
+    serializer_class = DeactivedJobSerializer
+    def update(self, request, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(data=request.data)
+            if serializer.is_valid():
+                job_requirement_id = serializer.data['job_requirement_id']
+                job_requirement = JobRequirement.objects.get(id = job_requirement_id)
+                job_requirement.active = not job_requirement.active
+                job_requirement.save()
+                response = {
+                    "status": status.HTTP_200_OK,
+                    "message": "Updated successfully",
+                    "data": job_requirement_id,
+                }
+                return Response(response, status=status.HTTP_200_OK)
+            else:
+                response = {
+                    "status": status.HTTP_400_BAD_REQUEST,
+                    "message": "Updated failed",
+                    "data": serializer.errors,
+                }
+                return Response(response, status= status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print(e)
+            response = {
+                "status": status.HTTP_401_UNAUTHORIZED,
+                "message": "Updated Failed",
+                "data": {},
+            } 
+            return Response(response, status=status.HTTP_401_UNAUTHORIZED) 
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            job_requirement_id = instance.id
+            self.perform_destroy(instance)
+            response = {
+                "status": status.HTTP_204_NO_CONTENT,
+                "message": "Deleted successfully",
+                "data": job_requirement_id,
+            }
+            return Response(response, status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            print(e)
+            response = {
+                "status": status.HTTP_401_UNAUTHORIZED,
+                "message": "Deleted Failed",
+                "data": {},
+            } 
+            return Response(response, status=status.HTTP_401_UNAUTHORIZED)

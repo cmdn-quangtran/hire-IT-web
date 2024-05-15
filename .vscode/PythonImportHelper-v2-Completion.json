@@ -124,6 +124,15 @@
         "documentation": {}
     },
     {
+        "label": "string",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "string",
+        "description": "string",
+        "detail": "string",
+        "documentation": {}
+    },
+    {
         "label": "send_mail",
         "importPath": "django.core.mail",
         "description": "django.core.mail",
@@ -444,7 +453,23 @@
         "documentation": {}
     },
     {
+        "label": "send_email_with_job",
+        "importPath": "accounts.emails",
+        "description": "accounts.emails",
+        "isExtraImport": true,
+        "detail": "accounts.emails",
+        "documentation": {}
+    },
+    {
         "label": "send_email_with_template",
+        "importPath": "accounts.emails",
+        "description": "accounts.emails",
+        "isExtraImport": true,
+        "detail": "accounts.emails",
+        "documentation": {}
+    },
+    {
+        "label": "send_email_with_cv",
         "importPath": "accounts.emails",
         "description": "accounts.emails",
         "isExtraImport": true,
@@ -701,6 +726,15 @@
         "documentation": {}
     },
     {
+        "label": "get_random_string",
+        "kind": 2,
+        "importPath": "accounts.emails",
+        "description": "accounts.emails",
+        "peekOfCode": "def get_random_string(length):\n    letters = string.ascii_lowercase\n    result_str = ''.join(random.choice(letters) for i in range(length))\n    return result_str\ndef send_opt_via_email(email):\n    subject = 'Your account verification email'\n    otp = random.randint(100000, 999999)\n    message = f\"Your OTP is {otp}\"\n    email_from = settings.EMAIL_HOST\n    send_mail(subject, message, email_from, [email])",
+        "detail": "accounts.emails",
+        "documentation": {}
+    },
+    {
         "label": "send_opt_via_email",
         "kind": 2,
         "importPath": "accounts.emails",
@@ -715,6 +749,24 @@
         "importPath": "accounts.emails",
         "description": "accounts.emails",
         "peekOfCode": "def send_email_with_template(email):\n    email_from = settings.EMAIL_HOST\n    subject = 'Your account verification email'\n    otp = random.randint(100000, 999999)\n    try:\n        template = get_template('emails/verify_email.html')\n        context = {'otp': otp}\n        message = template.render(context)\n        send_mail(subject, '', email_from, [email], html_message=message)\n        user_obj = User.objects.get(email=email)",
+        "detail": "accounts.emails",
+        "documentation": {}
+    },
+    {
+        "label": "send_email_with_cv",
+        "kind": 2,
+        "importPath": "accounts.emails",
+        "description": "accounts.emails",
+        "peekOfCode": "def send_email_with_cv(email, job_name, company_name, pdf_file, name, email_user ):\n    email_from = settings.EMAIL_HOST\n    subject = 'Job Application'\n    try:\n        template = get_template('emails/send_cv.html')\n        context = {\n            'job_name': job_name,\n            'company_name': company_name,\n            'pdf_file': pdf_file,\n            'name': name,",
+        "detail": "accounts.emails",
+        "documentation": {}
+    },
+    {
+        "label": "send_email_with_job",
+        "kind": 2,
+        "importPath": "accounts.emails",
+        "description": "accounts.emails",
+        "peekOfCode": "def send_email_with_job(email, name_candidate, job_name, pdf_upload , company_name, name, email_user):\n    email_from = settings.EMAIL_HOST\n    subject = 'Invitation for Job'\n    try:\n        template = get_template('emails/send_job.html')\n        context = {\n            'job_name': job_name,\n            'name_candidate': name_candidate,\n            'company_name': company_name,\n            'pdf_upload': pdf_upload,",
         "detail": "accounts.emails",
         "documentation": {}
     },
@@ -921,7 +973,34 @@
         "kind": 6,
         "importPath": "accounts.serializers",
         "description": "accounts.serializers",
-        "peekOfCode": "class JobRequirementGetAll(serializers.ModelSerializer):\n    recruiter = serializers.SerializerMethodField()\n    class Meta:\n        model = JobRequirement\n        fields = '__all__'\n    def get_recruiter(self, obj):\n        return RecruiterSerializer(obj.recruiter).data",
+        "peekOfCode": "class JobRequirementGetAll(serializers.ModelSerializer):\n    recruiter = serializers.SerializerMethodField()\n    class Meta:\n        model = JobRequirement\n        fields = '__all__'\n    def get_recruiter(self, obj):\n        return RecruiterSerializer(obj.recruiter).data\nclass EmailCVSerializer(serializers.Serializer):\n    email = serializers.EmailField()\n    job_name = serializers.CharField()",
+        "detail": "accounts.serializers",
+        "documentation": {}
+    },
+    {
+        "label": "EmailCVSerializer",
+        "kind": 6,
+        "importPath": "accounts.serializers",
+        "description": "accounts.serializers",
+        "peekOfCode": "class EmailCVSerializer(serializers.Serializer):\n    email = serializers.EmailField()\n    job_name = serializers.CharField()\n    company_name = serializers.CharField()\n    pdf_file = serializers.CharField()\n    name = serializers.CharField()\n    email_user = serializers.EmailField()\nclass EmailJobSerializer(serializers.Serializer):\n    email = serializers.EmailField()\n    job_name = serializers.CharField()",
+        "detail": "accounts.serializers",
+        "documentation": {}
+    },
+    {
+        "label": "EmailJobSerializer",
+        "kind": 6,
+        "importPath": "accounts.serializers",
+        "description": "accounts.serializers",
+        "peekOfCode": "class EmailJobSerializer(serializers.Serializer):\n    email = serializers.EmailField()\n    job_name = serializers.CharField()\n    company_name = serializers.CharField()\n    pdf_upload = serializers.CharField()\n    name_candidate = serializers.CharField()\n    name = serializers.CharField()\n    email_user = serializers.EmailField()\nclass DeactivedJobSerializer(serializers.Serializer):\n    job_requirement_id = serializers.CharField()",
+        "detail": "accounts.serializers",
+        "documentation": {}
+    },
+    {
+        "label": "DeactivedJobSerializer",
+        "kind": 6,
+        "importPath": "accounts.serializers",
+        "description": "accounts.serializers",
+        "peekOfCode": "class DeactivedJobSerializer(serializers.Serializer):\n    job_requirement_id = serializers.CharField()",
         "detail": "accounts.serializers",
         "documentation": {}
     },
@@ -930,7 +1009,7 @@
         "kind": 5,
         "importPath": "accounts.urls",
         "description": "accounts.urls",
-        "peekOfCode": "app_name = 'Account'\nrouter = routers.DefaultRouter()\nrouter.register(r'employees', EmployeeViewSet)\nrouter.register(r'employee/register', RegisterViewSet, basename='user/register')\nrouter.register(r'recruiter/register', RecruiterRegisterViewSet, basename='recruiter/register')\nurlpatterns = [\n    path('api/token/', csrf_exempt(MyTokenObtainPairView.as_view()), name='token_obtain_pair'),\n    path('api/token/refresh/', csrf_exempt(MyTokenRefreshView.as_view()), name='token_refresh'),\n    path('employee/login/', csrf_exempt(LoginView.as_view()), name='login'),\n    path('employee/verify-email/', VerifyEmail.as_view(), name='verify-email'),",
+        "peekOfCode": "app_name = 'Account'\nrouter = routers.DefaultRouter()\nrouter.register(r'employees', EmployeeViewSet)\nrouter.register(r'employee/register', RegisterViewSet, basename='user/register')\nrouter.register(r'recruiter/register', RecruiterRegisterViewSet, basename='recruiter/register')\nrouter.register(r'recruiter/job', DeleteJobView, basename='recruiter/job')\nurlpatterns = [\n    path('api/token/', csrf_exempt(MyTokenObtainPairView.as_view()), name='token_obtain_pair'),\n    path('api/token/refresh/', csrf_exempt(MyTokenRefreshView.as_view()), name='token_refresh'),\n    path('employee/login/', csrf_exempt(LoginView.as_view()), name='login'),",
         "detail": "accounts.urls",
         "documentation": {}
     },
@@ -939,7 +1018,7 @@
         "kind": 5,
         "importPath": "accounts.urls",
         "description": "accounts.urls",
-        "peekOfCode": "router = routers.DefaultRouter()\nrouter.register(r'employees', EmployeeViewSet)\nrouter.register(r'employee/register', RegisterViewSet, basename='user/register')\nrouter.register(r'recruiter/register', RecruiterRegisterViewSet, basename='recruiter/register')\nurlpatterns = [\n    path('api/token/', csrf_exempt(MyTokenObtainPairView.as_view()), name='token_obtain_pair'),\n    path('api/token/refresh/', csrf_exempt(MyTokenRefreshView.as_view()), name='token_refresh'),\n    path('employee/login/', csrf_exempt(LoginView.as_view()), name='login'),\n    path('employee/verify-email/', VerifyEmail.as_view(), name='verify-email'),\n    path('employee/pdf-upload/', UploadPDFView.as_view(), name='pdf_upload'),",
+        "peekOfCode": "router = routers.DefaultRouter()\nrouter.register(r'employees', EmployeeViewSet)\nrouter.register(r'employee/register', RegisterViewSet, basename='user/register')\nrouter.register(r'recruiter/register', RecruiterRegisterViewSet, basename='recruiter/register')\nrouter.register(r'recruiter/job', DeleteJobView, basename='recruiter/job')\nurlpatterns = [\n    path('api/token/', csrf_exempt(MyTokenObtainPairView.as_view()), name='token_obtain_pair'),\n    path('api/token/refresh/', csrf_exempt(MyTokenRefreshView.as_view()), name='token_refresh'),\n    path('employee/login/', csrf_exempt(LoginView.as_view()), name='login'),\n    path('employee/verify-email/', VerifyEmail.as_view(), name='verify-email'),",
         "detail": "accounts.urls",
         "documentation": {}
     },
@@ -948,7 +1027,7 @@
         "kind": 5,
         "importPath": "accounts.urls",
         "description": "accounts.urls",
-        "peekOfCode": "urlpatterns = [\n    path('api/token/', csrf_exempt(MyTokenObtainPairView.as_view()), name='token_obtain_pair'),\n    path('api/token/refresh/', csrf_exempt(MyTokenRefreshView.as_view()), name='token_refresh'),\n    path('employee/login/', csrf_exempt(LoginView.as_view()), name='login'),\n    path('employee/verify-email/', VerifyEmail.as_view(), name='verify-email'),\n    path('employee/pdf-upload/', UploadPDFView.as_view(), name='pdf_upload'),\n    path('employee/deactive/', DeactivePDFView.as_view(), name='deactive_pdf'),\n    path('employee/verify-cv/', ExtractCVCreateView.as_view(), name='verify-job'),\n    path('employee/find-job/', ExtractCVView.as_view(), name='extract_cv'),\n    path('user/get-information/', GetInformation.as_view(), name='get-infomation'),",
+        "peekOfCode": "urlpatterns = [\n    path('api/token/', csrf_exempt(MyTokenObtainPairView.as_view()), name='token_obtain_pair'),\n    path('api/token/refresh/', csrf_exempt(MyTokenRefreshView.as_view()), name='token_refresh'),\n    path('employee/login/', csrf_exempt(LoginView.as_view()), name='login'),\n    path('employee/verify-email/', VerifyEmail.as_view(), name='verify-email'),\n    path('employee/pdf-upload/', UploadPDFView.as_view(), name='pdf_upload'),\n    path('employee/deactive/', DeactivePDFView.as_view(), name='deactive_pdf'),\n    path('employee/verify-cv/', ExtractCVCreateView.as_view(), name='verify-job'),\n    path('employee/find-job/', ExtractCVView.as_view(), name='extract_cv'),\n    path('user/upload-recruiter-profile/', UpdateRecruiterProfile.as_view(), name='upload_profile'),",
         "detail": "accounts.urls",
         "documentation": {}
     },
@@ -1192,6 +1271,33 @@
         "importPath": "accounts.views",
         "description": "accounts.views",
         "peekOfCode": "class JobOwnerView(GenericAPIView):\n    permission_classes = [IsRecruiterPermission, IsAuthenticated]\n    serializer_class = JobRequirementGetAll\n    def get(self, request, *args, **kwargs):\n        try:\n            user_id = request.user.id\n            recruiter = Recruiter.objects.get(account_id=user_id)\n            job_requirements = JobRequirement.objects.filter(recruiter=recruiter)\n            serializer = self.get_serializer(job_requirements, many=True)\n            response_data = serializer.data",
+        "detail": "accounts.views",
+        "documentation": {}
+    },
+    {
+        "label": "EmailCVView",
+        "kind": 6,
+        "importPath": "accounts.views",
+        "description": "accounts.views",
+        "peekOfCode": "class EmailCVView(APIView):\n    permission_classes = [IsEmployeePermission, IsAuthenticated]\n    serializer_class = EmailCVSerializer\n    @swagger_auto_schema(\n        request_body=EmailCVSerializer,\n        operation_description=\"Send email with CV\",\n        responses={\n            200: \"Email sent successfully\",\n            401: \"Unauthorized\",\n        }",
+        "detail": "accounts.views",
+        "documentation": {}
+    },
+    {
+        "label": "EmailJobView",
+        "kind": 6,
+        "importPath": "accounts.views",
+        "description": "accounts.views",
+        "peekOfCode": "class EmailJobView(APIView):\n    permission_classes = [IsRecruiterPermission, IsAuthenticated]\n    serializer_class = EmailJobSerializer\n    @swagger_auto_schema(\n        request_body=EmailJobSerializer,\n        operation_description=\"Send email with Job\",\n        responses={\n            200: \"Email sent successfully\",\n            401: \"Unauthorized\",\n        }",
+        "detail": "accounts.views",
+        "documentation": {}
+    },
+    {
+        "label": "DeleteJobView",
+        "kind": 6,
+        "importPath": "accounts.views",
+        "description": "accounts.views",
+        "peekOfCode": "class DeleteJobView(viewsets.ModelViewSet):\n    permission_classes = [IsRecruiterPermission, IsAuthenticated]\n    queryset = JobRequirement.objects.all()\n    serializer_class = DeactivedJobSerializer\n    def update(self, request, *args, **kwargs):\n        try:\n            serializer = self.get_serializer(data=request.data)\n            if serializer.is_valid():\n                job_requirement_id = serializer.data['job_requirement_id']\n                job_requirement = JobRequirement.objects.get(id = job_requirement_id)",
         "detail": "accounts.views",
         "documentation": {}
     },
