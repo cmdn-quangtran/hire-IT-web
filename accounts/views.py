@@ -507,11 +507,11 @@ class UpdateEmployeeProfile(generics.GenericAPIView):
                 serializer = EmployeeSerializer(employee)
                 
                 response = {
-                    "status": status.HTTP_204_NO_CONTENT,
+                    "status": status.HTTP_200_OK,
                     "message": "Upload successfully",
                     "data": serializer.data,
                 }
-                return Response(response, status=status.HTTP_204_NO_CONTENT)
+                return Response(response, status=status.HTTP_200_OK)
             else:
                 employee = Employee.objects.get(account_id=request.user.id)
                 employee.account.first_name = first_name
@@ -519,11 +519,11 @@ class UpdateEmployeeProfile(generics.GenericAPIView):
                 employee.account.save()
                 serializer = EmployeeSerializer(employee)
                 response = {
-                    "status": status.HTTP_204_NO_CONTENT,
+                    "status": status.HTTP_200_OK,
                     "message": "Upload successfully",
                     "data": serializer.data,
                 }
-                return Response(response, status=status.HTTP_204_NO_CONTENT)
+                return Response(response, status=status.HTTP_200_OK)
         except Employee.DoesNotExist:
             response = {
                 "status": status.HTTP_401_UNAUTHORIZED,

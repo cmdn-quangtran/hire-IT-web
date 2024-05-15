@@ -65,6 +65,22 @@
         "documentation": {}
     },
     {
+        "label": "migrations",
+        "importPath": "django.db",
+        "description": "django.db",
+        "isExtraImport": true,
+        "detail": "django.db",
+        "documentation": {}
+    },
+    {
+        "label": "models",
+        "importPath": "django.db",
+        "description": "django.db",
+        "isExtraImport": true,
+        "detail": "django.db",
+        "documentation": {}
+    },
+    {
         "label": "models",
         "importPath": "django.db",
         "description": "django.db",
@@ -687,6 +703,15 @@
         "description": "accounts.migrations.0002_extractcv",
         "peekOfCode": "class Migration(migrations.Migration):\n    dependencies = [\n        ('accounts', '0001_initial'),\n    ]\n    operations = [\n        migrations.CreateModel(\n            name='ExtractCV',\n            fields=[\n                ('employee', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, primary_key=True, related_name='extract_cv', serialize=False, to='accounts.employee')),\n                ('phone_number', models.CharField(blank=True, max_length=12, null=True)),",
         "detail": "accounts.migrations.0002_extractcv",
+        "documentation": {}
+    },
+    {
+        "label": "Migration",
+        "kind": 6,
+        "importPath": "accounts.migrations.0003_alter_employee_avatar_url_alter_recruiter_avatar_url_and_more",
+        "description": "accounts.migrations.0003_alter_employee_avatar_url_alter_recruiter_avatar_url_and_more",
+        "peekOfCode": "class Migration(migrations.Migration):\n    dependencies = [\n        ('accounts', '0002_extractcv'),\n    ]\n    operations = [\n        migrations.AlterField(\n            model_name='employee',\n            name='avatar_url',\n            field=models.CharField(blank=True, default='https://res.cloudinary.com/dzqfmaj6i/image/upload/v1712999567/hireIT/default/user_default_hx8abj.jpg', max_length=1000, null=True),\n        ),",
+        "detail": "accounts.migrations.0003_alter_employee_avatar_url_alter_recruiter_avatar_url_and_more",
         "documentation": {}
     },
     {
