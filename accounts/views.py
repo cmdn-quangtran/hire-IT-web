@@ -701,7 +701,6 @@ class UploadJobView(generics.GenericAPIView):
             if serializer.is_valid():
                 location = request.data['location']
                 job_name = request.data['job_name']
-                print('location:--------------------------',location, job_name)
                 if 'pdf_file' not in request.FILES:
                     response = {
                         "status": status.HTTP_400_BAD_REQUEST,
