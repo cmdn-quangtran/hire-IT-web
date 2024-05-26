@@ -83,3 +83,28 @@ class ExtractCV(models.Model):
 
     class Meta:
         db_table = 'ExtractCV'
+
+class Interview(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, auto_created=True)
+    employee = models.ForeignKey('Employee', on_delete=models.CASCADE)
+    recruiter = models.ForeignKey('Recruiter', on_delete=models.CASCADE)
+    date = models.DateField()
+    hour_start = models.IntegerField()
+    minute_start = models.IntegerField()
+    hour_end = models.IntegerField()
+    minute_end = models.IntegerField()
+    status = models.CharField(choices=STATUS_CHOICES, default='pending', max_length=20)
+
+    class Meta:
+        db_table = 'Interview'
+
+    def __str__(self):
+        return f"Interview {self.id} with {self.employee} by {self.recruiter} on {self.date}"
+    
+    

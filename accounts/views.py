@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import status, permissions, viewsets, generics
@@ -9,8 +10,8 @@ import cloudinary.uploader
 from accounts.emails import send_email_with_job, send_email_with_template, send_email_with_cv
 from accounts.permissions import IsEmployeePermission, IsRecruiterPermission
 from accounts.utils import extract_location, extract_phone_number, extract_skills, extract_text_from_pdf
-from .serializers import  DeactivedJobSerializer, EmailCVSerializer, EmailJobSerializer, EmployeeProfile, EmployeeSerializer, ExtractCVCreateSerializer, ExtractCVGetAll, JobRequirementGetAll, JobRequirementSerializer, LoginSerializer, MyTokenObtainPairSerializer, PDFFileSerializer, RecruiterProfile, RecruiterRegisterSerializer, RecruiterSerializer, UserRegisterSerializer, VertifyEmailSerializer
-from .models import Employee, ExtractCV, JobRequirement, Recruiter, User
+from .serializers import  DeactivedJobSerializer, EmailCVSerializer, EmailJobSerializer, EmployeeProfile, EmployeeSerializer, ExtractCVCreateSerializer, ExtractCVGetAll, InterviewSerializer, InterviewStatuserializer, JobRequirementGetAll, JobRequirementSerializer, LoginSerializer, MyTokenObtainPairSerializer, PDFFileSerializer, RecruiterProfile, RecruiterRegisterSerializer, RecruiterSerializer, UserRegisterSerializer, VertifyEmailSerializer
+from .models import Employee, ExtractCV, Interview, JobRequirement, Recruiter, User
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
 from drf_yasg.utils import swagger_auto_schema
@@ -979,3 +980,179 @@ class DeleteJobView(viewsets.ModelViewSet):
                 "data": {},
             } 
             return Response(response, status=status.HTTP_401_UNAUTHORIZED)
+
+# API INTERVIEW 
+class InterviewViewSet(viewsets.ModelViewSet):
+    queryset = Interview.objects.all()
+    serializer_class = InterviewStatuserializer
+
+    def get_permissions(self):
+        if self.action == 'update':
+            permission_classes = [IsAuthenticated] 
+        elif self.action == 'destroy':
+            permission_classes = [IsAuthenticated, IsRecruiterPermission]  
+        else:
+            permission_classes = [] 
+        return [permission() for permission in permission_classes]
+    
+    @swagger_auto_schema(request_body=InterviewStatuserializer)
+    def update(self, request, pk):
+        try:
+            interview = self.get_object()
+        except Interview.DoesNotExist:
+            response = {
+                "status": status.HTTP_404_NOT_FOUND,
+                "message": "Interview not found",
+                "data": {},
+            }
+            return Response(response, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = InterviewStatuserializer(interview, data=request.data, partial=True)
+        if serializer.is_valid():
+            interview.status = request.data['status']
+            interview.save()
+            response = {
+                "status": status.HTTP_200_OK,
+                "message": "Interview updated successfully.",
+                "data": {},
+            }
+            return Response(response, status=status.HTTP_200_OK)
+        
+        response = {
+            "status": status.HTTP_400_BAD_REQUEST,
+            "message": "Interview update failed.",
+            "data": {},
+        }
+        return Response(response, status=status.HTTP_400_BAD_REQUEST)
+    
+    def destroy(self, request, pk):
+        try:
+            interview = self.get_object()
+        except Interview.DoesNotExist:
+            response = {
+                "status": status.HTTP_404_NOT_FOUND,
+                "message": "Interview not found",
+                "data": {},
+            }
+            return Response(response, status=status.HTTP_404_NOT_FOUND)
+        
+        interview.delete()
+        response = {
+            "status": status.HTTP_200_OK,
+            "message": "Interview deleted successfully.",
+            "data": {},
+        }
+        return Response(response, status=status.HTTP_200_OK)
+    
+class InterviewCreateAPIView(GenericAPIView):
+    serializer_class = InterviewSerializer
+    permission_classes = [IsRecruiterPermission, IsAuthenticated]
+
+    @swagger_auto_schema(request_body=InterviewSerializer)
+    def post(self, request):
+        serializer = InterviewSerializer(data=request.data)
+        if serializer.is_valid():
+            employee_email = serializer.data["employee_email"]
+            recruiter_email = serializer.data["recruiter_email"]
+            hour_start = serializer.data["hour_start"]
+            minute_start = serializer.data["minute_start"]
+            hour_end = serializer.data["hour_end"]
+            minute_end = serializer.data["minute_end"]
+            date = serializer.data["date"]
+            start_time = datetime.strptime(f"{hour_start}:{minute_start}", "%H:%M").time()
+            end_time = datetime.strptime(f"{hour_end}:{minute_end}", "%H:%M").time()
+
+            current_datetime = datetime.now().date()
+
+            interview_date = datetime.strptime(date, "%Y-%m-%d").date()
+
+            if interview_date <= current_datetime:
+                response = {
+                    "status": status.HTTP_400_BAD_REQUEST,
+                    "message": "Invalid date. Date must be in the future.",
+                    "data": {},
+                }
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            
+            if start_time >= end_time:
+                response = {
+                    "status": status.HTTP_400_BAD_REQUEST,
+                    "message": "Invalid time range. Start time must be before end time.",
+                    "data": {},
+                }
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Create the scheduled time using the provided date and time components
+            employee = Employee.objects.get(account__email=employee_email)
+
+            existing_interviews = Interview.objects.filter(
+                employee=employee,
+                date=date,
+            )
+
+
+
+            for existing_interview in existing_interviews:
+                existing_start_time = datetime.strptime(f"{existing_interview.hour_start}:{existing_interview.minute_start}", "%H:%M").time()
+                existing_end_time = datetime.strptime(f"{existing_interview.hour_end}:{existing_interview.minute_end}", "%H:%M").time()
+                if (existing_interview.status != 'cancel'):
+                    if (
+                        (start_time >= existing_start_time and start_time < existing_end_time) or
+                        (end_time > existing_start_time and end_time <= existing_end_time)
+                    ):
+                        response = {
+                            "status": status.HTTP_409_CONFLICT,
+                            "message": "Time conflict with existing interview.",
+                            "data": {
+                                "interview_id": existing_interview.id,
+                                "employee_email": employee_email,
+                                "recruiter_email": recruiter_email,
+                            },
+                        }
+                        return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+            recruiter = Recruiter.objects.get(account__email=recruiter_email)
+
+            # Check if the interview already exists
+            existing_interview = Interview.objects.filter(
+                employee=employee,
+                recruiter=recruiter,
+                date=date,
+            ).first()
+            
+            if existing_interview and existing_interview.status != 'cancel':
+                response = {
+                    "status": status.HTTP_409_CONFLICT,
+                    "message": "Interview already exists.",
+                    "data": {
+                        "interview_id": existing_interview.id,
+                        "employee_email": employee_email,
+                        "recruiter_email": recruiter_email,
+                    },
+                }
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Create the Interview object
+            interview = Interview.objects.create(
+                employee=employee,
+                recruiter=recruiter,
+                hour_start=hour_start,
+                minute_start=minute_start,
+                hour_end=hour_end,
+                minute_end=minute_end,
+                date=date,
+            )
+
+            response = {
+                "status": status.HTTP_201_CREATED,
+                "message": "Scheduling successfully!",
+                "data": {
+                    "interview_id": interview.id,
+                    "employee_email": employee_email,
+                    "recruiter_email": recruiter_email,
+                },
+            }
+            return Response(response, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            

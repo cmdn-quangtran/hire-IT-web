@@ -10,6 +10,7 @@ router.register(r'employees', EmployeeViewSet)
 router.register(r'employee/register', RegisterViewSet, basename='user/register')
 router.register(r'recruiter/register', RecruiterRegisterViewSet, basename='recruiter/register')
 router.register(r'recruiter/job', DeleteJobView, basename='recruiter/job')
+router.register(r'interviews', InterviewViewSet, basename='interview')
 urlpatterns = [
     path('api/token/', csrf_exempt(MyTokenObtainPairView.as_view()), name='token_obtain_pair'),
     path('api/token/refresh/', csrf_exempt(MyTokenRefreshView.as_view()), name='token_refresh'),
@@ -30,6 +31,8 @@ urlpatterns = [
     path('recruiter/get-all-jobs-owner/', JobOwnerView.as_view(), name='get_all_candidates'),
     path('recruiter/upload-job/', UploadJobView.as_view(), name='upload_and_extract_cv'),
     path('recruiter/send-email/', EmailJobView.as_view(), name='send_job'),
+
+    path('interviews/set-up/', InterviewCreateAPIView.as_view(), name='interview-setup'),
 
 ]
 

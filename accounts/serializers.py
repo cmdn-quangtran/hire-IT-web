@@ -1,6 +1,6 @@
 import uuid
 from rest_framework import serializers
-from .models import ExtractCV, JobRequirement, User, Employee, Recruiter
+from .models import ExtractCV, Interview, JobRequirement, User, Employee, Recruiter
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.hashers import make_password
 from django.core.validators import FileExtensionValidator
@@ -171,3 +171,37 @@ class EmailJobSerializer(serializers.Serializer):
 
 class DeactivedJobSerializer(serializers.Serializer):
     job_requirement_id = serializers.CharField() 
+
+
+# Model Interview
+class InterviewSerializer(serializers.ModelSerializer):
+    employee_email = serializers.EmailField()
+    recruiter_email = serializers.EmailField()
+    class Meta:
+        model = Interview
+        fields = ['employee_email', 'recruiter_email', 'hour_start', 'minute_start', 'hour_end', 'minute_end', 'date']
+
+    def validate(self, data):
+        if data['hour_start'] > data['hour_end'] or (data['hour_start'] == data['hour_end'] and data['minute_start'] >= data['minute_end']):
+            raise serializers.ValidationError("Start time must be before end time")
+        return data   
+
+class InterviewUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Interview
+        fields = ['hour_start', 'minute_start', 'hour_end', 'minute_end', 'date', 'status']
+
+    def validate(self, data):
+        if data['hour_start'] > data['hour_end'] or (data['hour_start'] == data['hour_end'] and data['minute_start'] >= data['minute_end']):
+            raise serializers.ValidationError("Start time must be before end time")
+        return data   
+
+class InterviewListSerializer(serializers.Serializer):
+    date = serializers.DateField()
+    recruiter_email = serializers.EmailField()
+
+class InterviewAllSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+class InterviewStatuserializer(serializers.Serializer):
+    status = serializers.CharField(max_length=30)
