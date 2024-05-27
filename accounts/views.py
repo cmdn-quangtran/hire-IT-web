@@ -1,5 +1,6 @@
 from datetime import datetime
 from django.shortcuts import get_object_or_404
+import requests
 from rest_framework.response import Response
 from rest_framework import status, permissions, viewsets, generics
 from rest_framework import  permissions
@@ -10,7 +11,7 @@ import cloudinary.uploader
 from accounts.emails import send_email_with_job, send_email_with_template, send_email_with_cv
 from accounts.permissions import IsEmployeePermission, IsRecruiterPermission
 from accounts.utils import extract_location, extract_phone_number, extract_skills, extract_text_from_pdf
-from .serializers import  DeactivedJobSerializer, EmailCVSerializer, EmailJobSerializer, EmployeeProfile, EmployeeSerializer, ExtractCVCreateSerializer, ExtractCVGetAll, InterviewSerializer, InterviewStatuserializer, JobRequirementGetAll, JobRequirementSerializer, LoginSerializer, MyTokenObtainPairSerializer, PDFFileSerializer, RecruiterProfile, RecruiterRegisterSerializer, RecruiterSerializer, UserRegisterSerializer, VertifyEmailSerializer
+from .serializers import  DeactivedJobSerializer, EmailCVSerializer, EmailJobSerializer, EmployeeProfile, EmployeeSerializer, ExtractCVCreateSerializer, ExtractCVGetAll, InterviewListSerializer, InterviewSerializer, InterviewStatuserializer, JobRequirementGetAll, JobRequirementSerializer, LoginSerializer, MyTokenObtainPairSerializer, PDFFileSerializer, RecruiterProfile, RecruiterRegisterSerializer, RecruiterSerializer, UserRegisterSerializer, VertifyEmailSerializer
 from .models import Employee, ExtractCV, Interview, JobRequirement, Recruiter, User
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -1155,4 +1156,52 @@ class InterviewCreateAPIView(GenericAPIView):
             return Response(response, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            
+class InterviewListAPIView(generics.GenericAPIView):
+   def get(self, request):
+        serializer = InterviewListSerializer(data=request.GET)
+        if serializer.is_valid(): 
+            try:
+                date = serializer.validated_data['date']
+                recruiter_email = serializer.validated_data['recruiter_email']
+
+                interviews = Interview.objects.filter(date=date, recruiter__account__email=recruiter_email)
+                interview_data = []
+                for interview in interviews:
+                    if interview.status != 'cancel':
+                        interview_data.append({
+                            'interview_id': interview.id,
+                            'employee_email': interview.employee.account.email,
+                            'employee_name': interview.employee.account.first_name + " " + interview.employee.account.last_name,
+                            'recruiter_email': interview.recruiter.account.email,
+                            'hour_start': interview.hour_start,
+                            'minute_start': interview.minute_start,
+                            'hour_end': interview.hour_end,
+                            'minute_end': interview.minute_end,
+                            'date': interview.date,
+                            'status': interview.status,
+                        })
+
+                if not interview_data:
+                    response = {
+                        'status': status.HTTP_404_NOT_FOUND,
+                        'message': 'No interviews found.',
+                        'data': [],
+                    }
+                else:
+                    response = {
+                        'status': status.HTTP_200_OK,
+                        'message': 'Interviews retrieved successfully.',
+                        'data': interview_data,
+                    }
+
+                return Response(response)
+
+            except Exception as e:
+                response = {
+                    "status": status.HTTP_401_UNAUTHORIZED,
+                    "message": "Get interview failed",
+                    "data": {},
+                }
+                return Response(response, status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

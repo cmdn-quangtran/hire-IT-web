@@ -1432,6 +1432,15 @@
         "documentation": {}
     },
     {
+        "label": "InterviewListAPIView",
+        "kind": 6,
+        "importPath": "accounts.views",
+        "description": "accounts.views",
+        "peekOfCode": "class InterviewListAPIView(generics.GenericAPIView):\n   def get(self, request):\n        serializer = InterviewListSerializer(data=request.GET)\n        if serializer.is_valid(): \n            try:\n                date = serializer.validated_data['date']\n                recruiter_email = serializer.validated_data['recruiter_email']\n                interviews = Interview.objects.filter(date=date, recruiter__account__email=recruiter_email)\n                interview_data = []\n                for interview in interviews:",
+        "detail": "accounts.views",
+        "documentation": {}
+    },
+    {
         "label": "application",
         "kind": 5,
         "importPath": "core.asgi",
