@@ -34,6 +34,7 @@ urlpatterns = [
 
     path('interviews/set-up/', InterviewCreateAPIView.as_view(), name='interview-setup'),
     path('interviews/get-interview/', InterviewListAPIView.as_view(), name='interview-list'),
+    path('interviews/get-by-email/', InterviewListView.as_view(), name='interview-list')
 
 ]
 

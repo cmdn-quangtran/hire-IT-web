@@ -11,7 +11,7 @@ import cloudinary.uploader
 from accounts.emails import send_email_with_job, send_email_with_template, send_email_with_cv
 from accounts.permissions import IsEmployeePermission, IsRecruiterPermission
 from accounts.utils import extract_location, extract_phone_number, extract_skills, extract_text_from_pdf
-from .serializers import  DeactivedJobSerializer, EmailCVSerializer, EmailJobSerializer, EmployeeProfile, EmployeeSerializer, ExtractCVCreateSerializer, ExtractCVGetAll, InterviewListSerializer, InterviewSerializer, InterviewStatuserializer, JobRequirementGetAll, JobRequirementSerializer, LoginSerializer, MyTokenObtainPairSerializer, PDFFileSerializer, RecruiterProfile, RecruiterRegisterSerializer, RecruiterSerializer, UserRegisterSerializer, VertifyEmailSerializer
+from .serializers import  DeactivedJobSerializer, EmailCVSerializer, EmailJobSerializer, EmployeeProfile, EmployeeSerializer, ExtractCVCreateSerializer, ExtractCVGetAll, InterviewAllSerializer, InterviewListSerializer, InterviewSerializer, InterviewStatuserializer, JobRequirementGetAll, JobRequirementSerializer, LoginSerializer, MyTokenObtainPairSerializer, PDFFileSerializer, RecruiterProfile, RecruiterRegisterSerializer, RecruiterSerializer, UserRegisterSerializer, VertifyEmailSerializer
 from .models import Employee, ExtractCV, Interview, JobRequirement, Recruiter, User
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -21,6 +21,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import GenericAPIView
 from PIL import Image
+from django.db.models import Q
 
 # Create your views here.
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -1066,8 +1067,7 @@ class InterviewCreateAPIView(GenericAPIView):
             current_datetime = datetime.now().date()
 
             interview_date = datetime.strptime(date, "%Y-%m-%d").date()
-
-            if interview_date <= current_datetime:
+            if interview_date < current_datetime:
                 response = {
                     "status": status.HTTP_400_BAD_REQUEST,
                     "message": "Invalid date. Date must be in the future.",
@@ -1157,7 +1157,7 @@ class InterviewCreateAPIView(GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class InterviewListAPIView(generics.GenericAPIView):
-   def get(self, request):
+    def get(self, request):
         serializer = InterviewListSerializer(data=request.GET)
         if serializer.is_valid(): 
             try:
@@ -1200,6 +1200,56 @@ class InterviewListAPIView(generics.GenericAPIView):
                 response = {
                     "status": status.HTTP_401_UNAUTHORIZED,
                     "message": "Get interview failed",
+                    "data": {},
+                }
+                return Response(response, status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class InterviewListView(generics.GenericAPIView):
+    def get(self, request):
+        serializer = InterviewAllSerializer(data=request.GET)
+        if serializer.is_valid():
+            try: 
+                email = serializer.validated_data['email']
+                interviews = Interview.objects.filter(
+                    Q(recruiter__account__email=email) |
+                    Q(employee__account__email=email)
+                )
+
+                interview_data = []
+                for interview in interviews:
+                    if interview.status != 'cancel':
+                        interview_data.append({
+                            'interview_id': interview.id,
+                            'employee_email': interview.employee.account.email,
+                            'employee_name': interview.employee.account.first_name + " " + interview.employee.account.last_name,
+                            'recruiter_email': interview.recruiter.account.email,
+                            'hour_start': interview.hour_start,
+                            'minute_start': interview.minute_start,
+                            'hour_end': interview.hour_end,
+                            'minute_end': interview.minute_end,
+                            'date': interview.date,
+                            'status': interview.status,
+                        })
+
+                if not interview_data:
+                    response = {
+                        'status': status.HTTP_404_NOT_FOUND,
+                        'message': 'No interviews found.',
+                        'data': [],
+                    }
+                else:
+                    response = {
+                        'status': status.HTTP_200_OK,
+                        'message': 'Get all interviews successfully.',
+                        'data': interview_data,
+                    }
+
+                return Response(response)
+            except Exception as e:
+                response = {
+                    "status": status.HTTP_401_UNAUTHORIZED,
+                    "message": "Get all interviews failed",
                     "data": {},
                 }
                 return Response(response, status=status.HTTP_401_UNAUTHORIZED)

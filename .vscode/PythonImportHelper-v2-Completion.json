@@ -637,6 +637,14 @@
         "documentation": {}
     },
     {
+        "label": "Q",
+        "importPath": "django.db.models",
+        "description": "django.db.models",
+        "isExtraImport": true,
+        "detail": "django.db.models",
+        "documentation": {}
+    },
+    {
         "label": "get_asgi_application",
         "importPath": "django.core.asgi",
         "description": "django.core.asgi",
@@ -1436,7 +1444,16 @@
         "kind": 6,
         "importPath": "accounts.views",
         "description": "accounts.views",
-        "peekOfCode": "class InterviewListAPIView(generics.GenericAPIView):\n   def get(self, request):\n        serializer = InterviewListSerializer(data=request.GET)\n        if serializer.is_valid(): \n            try:\n                date = serializer.validated_data['date']\n                recruiter_email = serializer.validated_data['recruiter_email']\n                interviews = Interview.objects.filter(date=date, recruiter__account__email=recruiter_email)\n                interview_data = []\n                for interview in interviews:",
+        "peekOfCode": "class InterviewListAPIView(generics.GenericAPIView):\n    def get(self, request):\n        serializer = InterviewListSerializer(data=request.GET)\n        if serializer.is_valid(): \n            try:\n                date = serializer.validated_data['date']\n                recruiter_email = serializer.validated_data['recruiter_email']\n                interviews = Interview.objects.filter(date=date, recruiter__account__email=recruiter_email)\n                interview_data = []\n                for interview in interviews:",
+        "detail": "accounts.views",
+        "documentation": {}
+    },
+    {
+        "label": "InterviewListView",
+        "kind": 6,
+        "importPath": "accounts.views",
+        "description": "accounts.views",
+        "peekOfCode": "class InterviewListView(generics.GenericAPIView):\n    def get(self, request):\n        serializer = InterviewAllSerializer(data=request.GET)\n        if serializer.is_valid():\n            try: \n                email = serializer.validated_data['email']\n                interviews = Interview.objects.filter(\n                    Q(recruiter__account__email=email) |\n                    Q(employee__account__email=email)\n                )",
         "detail": "accounts.views",
         "documentation": {}
     },
