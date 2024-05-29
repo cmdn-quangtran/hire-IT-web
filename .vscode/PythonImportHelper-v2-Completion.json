@@ -1480,7 +1480,7 @@
         "kind": 5,
         "importPath": "core.settings",
         "description": "core.settings",
-        "peekOfCode": "SECRET_KEY = 'django-insecure-0&66@6&_+6b1%h$u2cneif53cko(--tlv%d4(pobrm$z+epkd9'\n# SECURITY WARNING: don't run with debug turned on in production!\nDEBUG = True\nALLOWED_HOSTS = ['.vercel.app']\nAUTH_USER_MODEL = 'accounts.User'\n# Application definition\nINSTALLED_APPS = [\n    \"whitenoise.runserver_nostatic\"\n    'django.contrib.admin',\n    'django.contrib.auth',",
+        "peekOfCode": "SECRET_KEY = 'django-insecure-0&66@6&_+6b1%h$u2cneif53cko(--tlv%d4(pobrm$z+epkd9'\n# SECURITY WARNING: don't run with debug turned on in production!\nDEBUG = True\nALLOWED_HOSTS = ['.vercel.app']\nAUTH_USER_MODEL = 'accounts.User'\n# Application definition\nINSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',",
         "detail": "core.settings",
         "documentation": {}
     },
@@ -1489,7 +1489,7 @@
         "kind": 5,
         "importPath": "core.settings",
         "description": "core.settings",
-        "peekOfCode": "DEBUG = True\nALLOWED_HOSTS = ['.vercel.app']\nAUTH_USER_MODEL = 'accounts.User'\n# Application definition\nINSTALLED_APPS = [\n    \"whitenoise.runserver_nostatic\"\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',",
+        "peekOfCode": "DEBUG = True\nALLOWED_HOSTS = ['.vercel.app']\nAUTH_USER_MODEL = 'accounts.User'\n# Application definition\nINSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',\n    'django.contrib.messages',",
         "detail": "core.settings",
         "documentation": {}
     },
@@ -1498,7 +1498,7 @@
         "kind": 5,
         "importPath": "core.settings",
         "description": "core.settings",
-        "peekOfCode": "ALLOWED_HOSTS = ['.vercel.app']\nAUTH_USER_MODEL = 'accounts.User'\n# Application definition\nINSTALLED_APPS = [\n    \"whitenoise.runserver_nostatic\"\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',\n    'django.contrib.messages',",
+        "peekOfCode": "ALLOWED_HOSTS = ['.vercel.app']\nAUTH_USER_MODEL = 'accounts.User'\n# Application definition\nINSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',\n    'django.contrib.messages',\n    'django.contrib.staticfiles',",
         "detail": "core.settings",
         "documentation": {}
     },
@@ -1507,7 +1507,7 @@
         "kind": 5,
         "importPath": "core.settings",
         "description": "core.settings",
-        "peekOfCode": "AUTH_USER_MODEL = 'accounts.User'\n# Application definition\nINSTALLED_APPS = [\n    \"whitenoise.runserver_nostatic\"\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',\n    'django.contrib.messages',\n    'django.contrib.staticfiles',",
+        "peekOfCode": "AUTH_USER_MODEL = 'accounts.User'\n# Application definition\nINSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',\n    'django.contrib.messages',\n    'django.contrib.staticfiles',\n    'accounts',",
         "detail": "core.settings",
         "documentation": {}
     },
@@ -1516,7 +1516,7 @@
         "kind": 5,
         "importPath": "core.settings",
         "description": "core.settings",
-        "peekOfCode": "INSTALLED_APPS = [\n    \"whitenoise.runserver_nostatic\"\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',\n    'django.contrib.messages',\n    'django.contrib.staticfiles',\n    'accounts',\n    'rest_framework',",
+        "peekOfCode": "INSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',\n    'django.contrib.messages',\n    'django.contrib.staticfiles',\n    'accounts',\n    'rest_framework',\n    'rest_framework.authtoken',",
         "detail": "core.settings",
         "documentation": {}
     },
