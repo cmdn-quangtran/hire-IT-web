@@ -1,9 +1,9 @@
 #!/bin/bash
 
 echo "Building project package..."
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 
 echo "Building migartion..."
-python manage.py makemigrations --noinput
-python manage.py migrate --noinput
+python3.x manage.py makemigrations --noinput
+python3.x manage.py migrate --noinput
 
