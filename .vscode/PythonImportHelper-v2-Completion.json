@@ -525,6 +525,14 @@
         "documentation": {}
     },
     {
+        "label": "send_email_with_interview",
+        "importPath": "accounts.emails",
+        "description": "accounts.emails",
+        "isExtraImport": true,
+        "detail": "accounts.emails",
+        "documentation": {}
+    },
+    {
         "label": "IsEmployeePermission",
         "importPath": "accounts.permissions",
         "description": "accounts.permissions",
@@ -833,6 +841,15 @@
         "importPath": "accounts.emails",
         "description": "accounts.emails",
         "peekOfCode": "def send_email_with_job(email, name_candidate, job_name, pdf_upload , company_name, name, email_user):\n    email_from = settings.EMAIL_HOST\n    subject = 'Invitation for Job'\n    try:\n        template = get_template('emails/send_job.html')\n        context = {\n            'job_name': job_name,\n            'name_candidate': name_candidate,\n            'company_name': company_name,\n            'pdf_upload': pdf_upload,",
+        "detail": "accounts.emails",
+        "documentation": {}
+    },
+    {
+        "label": "send_email_with_interview",
+        "kind": 2,
+        "importPath": "accounts.emails",
+        "description": "accounts.emails",
+        "peekOfCode": "def send_email_with_interview(email, company_name, date, time):\n    email_from = settings.EMAIL_HOST\n    subject = 'Job Interview'\n    try:\n        template = get_template('emails/send_interview.html')\n        context = {\n            'company_name': company_name,\n            'interview_date': date,\n            'interview_time': time,\n        }",
         "detail": "accounts.emails",
         "documentation": {}
     },

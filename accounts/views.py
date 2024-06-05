@@ -1,6 +1,5 @@
 from datetime import datetime
 from django.shortcuts import get_object_or_404
-import requests
 from rest_framework.response import Response
 from rest_framework import status, permissions, viewsets, generics
 from rest_framework import  permissions
@@ -8,7 +7,7 @@ from rest_framework.decorators import action
 from django.conf import settings
 from rest_framework.parsers import MultiPartParser, FormParser
 import cloudinary.uploader
-from accounts.emails import send_email_with_job, send_email_with_template, send_email_with_cv
+from accounts.emails import send_email_with_job, send_email_with_template, send_email_with_cv, send_email_with_interview
 from accounts.permissions import IsEmployeePermission, IsRecruiterPermission
 from accounts.utils import extract_location, extract_phone_number, extract_skills, extract_text_from_pdf
 from .serializers import  DeactivedJobSerializer, EmailCVSerializer, EmailJobSerializer, EmployeeProfile, EmployeeSerializer, ExtractCVCreateSerializer, ExtractCVGetAll, InterviewAllSerializer, InterviewListSerializer, InterviewSerializer, InterviewStatuserializer, JobRequirementGetAll, JobRequirementSerializer, LoginSerializer, MyTokenObtainPairSerializer, PDFFileSerializer, RecruiterProfile, RecruiterRegisterSerializer, RecruiterSerializer, UserRegisterSerializer, VertifyEmailSerializer
@@ -1143,6 +1142,10 @@ class InterviewCreateAPIView(GenericAPIView):
                 minute_end=minute_end,
                 date=date,
             )
+
+            time  = str(hour_start) + ":" + str(minute_start) + " to " + str(hour_end) + ":" + str(minute_end)
+
+            send_email_with_interview(employee.account.email, recruiter.company_name, date, time)
 
             response = {
                 "status": status.HTTP_201_CREATED,
