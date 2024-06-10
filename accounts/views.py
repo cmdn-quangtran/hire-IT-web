@@ -882,7 +882,7 @@ class EmailCVView(APIView):
         } 
         return Response(response, status=status.HTTP_401_UNAUTHORIZED)
 
-
+#send mail
 class EmailJobView(APIView):
     permission_classes = [IsRecruiterPermission, IsAuthenticated]
     serializer_class = EmailJobSerializer
