@@ -982,6 +982,7 @@ class DeleteJobView(viewsets.ModelViewSet):
             } 
             return Response(response, status=status.HTTP_401_UNAUTHORIZED)
 
+
 # API INTERVIEW 
 class InterviewViewSet(viewsets.ModelViewSet):
     queryset = Interview.objects.all()
